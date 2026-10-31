@@ -19,6 +19,12 @@ test('loads, imports clips, edits, saves and exports a 1080p MP4', async ({ page
   await expect(page.getByTestId('clip')).toHaveCount(3, { timeout: 60_000 });
   await page.screenshot({ path: info.outputPath('editor.png') });
 
+  // Templates tab lists the bundled templates (placeholder until M4).
+  await page.locator('[data-tool=templates]').click();
+  await expect(page.getByText('AI apply coming in M4')).toBeVisible();
+  expect(await page.getByTestId('template').count()).toBeGreaterThanOrEqual(10);
+  await page.locator('[data-tool=templates]').click();
+
   // Trim clip 1 to 2.0 s via the Trim panel.
   await page.getByTestId('clip').first().click();
   await page.locator('[data-tool=trim]').click();

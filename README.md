@@ -59,7 +59,7 @@ Full design: [`docs/SPEC.md`](docs/SPEC.md).
   or redo, is an op, so undo/redo is exact and the AI (M4) gets precise diffs. You can download the project JSON.
 - **AI settings (BYO key):** pick Grok, Claude or ChatGPT and store your key **only in this browser's localStorage**.
   The chat itself says "coming in M4".
-- **Templates tab** reserved: it lists bundled template recipes from `public/templates/index.json` once they land.
+- **Templates tab** (placeholder): lists the 16 bundled edit-recipe templates from [`templates/`](templates/), such as Fast Daily, Cinematic Travel, Beat-Sync Montage and Retro VHS. Each shows its name and description, labelled **AI apply coming in M4**. Schema: [`templates/SCHEMA.md`](templates/SCHEMA.md); asset sources and licences: [`templates/ASSETS.md`](templates/ASSETS.md).
 
 ## Roadmap
 
@@ -110,6 +110,7 @@ src/media/     import/probe, 540p proxies, OPFS + IndexedDB storage, capability 
 src/engine/    shared Canvas2D compositor, preview player, Mediabunny MP4 exporter
 src/ai/        BYO-key provider settings (M4 adapters will live here)
 src/templates/ template loader (Templates tab)
+templates/     template JSON recipes + JSON Schema + asset licence notes
 src/ui/        Preact UI (home, editor, timeline, panels, chat sheet, export)
 ```
 

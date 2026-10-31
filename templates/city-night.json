@@ -1,0 +1,364 @@
+{
+  "$schema": "./template.schema.json",
+  "schemaVersion": "1.0",
+  "author": "VlogUp contributors",
+  "license": "MIT",
+  "origin": "builtin",
+  "id": "city-night",
+  "name": "City Night",
+  "category": "city",
+  "description": "Neon city after dark: teal-magenta night grade, glow on lights, hyperlapses, whip transitions, synth or hip-hop beat.",
+  "tags": [
+    "city",
+    "night",
+    "neon",
+    "urban",
+    "hyperlapse"
+  ],
+  "inspiredBy": "Night-city / 'city vlog trend' edits: neon glow, motion-blur hyperlapses, whip pans between streets, moody synth.",
+  "stylePrompt": "Edit my clips as a moody neon city-night vlog. Cool teal shadows with magenta/orange neon highlights and a soft glow on the lights; keep blacks deep. Cut on the beat with whip pans and zoom-blur transitions between streets, hyperlapse ramps on walking or driving shots, and short glitch hits on the drop. Big condensed city-name title and small time stamps. Dark synth or lo-fi hip-hop music, city ambience low underneath.",
+  "aiHints": [
+    "Detect night/neon clips by low luminance + saturated highlights",
+    "Use moving-camera clips for whip transitions",
+    "Open on a skyline or street-light wide shot"
+  ],
+  "format": {
+    "aspect": "9:16",
+    "alsoExport": [
+      "16:9"
+    ],
+    "duration": {
+      "mode": "fit-music",
+      "minSec": 15,
+      "maxSec": 300
+    },
+    "fps": 30
+  },
+  "footage": {
+    "kind": "montage",
+    "minClips": 6,
+    "idealClips": 20,
+    "photos": "avoid",
+    "reuse": "if-short",
+    "orderPolicy": "energy-curve"
+  },
+  "music": {
+    "source": "user-or-library",
+    "mood": [
+      "retro-synth",
+      "hiphop",
+      "electronic"
+    ],
+    "bpmRange": [
+      80,
+      125
+    ],
+    "energyCurve": "build-drop",
+    "startAt": "auto",
+    "fadeInSec": 1,
+    "fadeOutSec": 2,
+    "volumeDb": -11,
+    "duckUnderSpeechDb": -14,
+    "endOnPhrase": true
+  },
+  "rhythm": {
+    "cutOn": "beat",
+    "beatsPerCut": [
+      1,
+      4
+    ],
+    "minShotSec": 0.35,
+    "maxShotSec": 4,
+    "patternInterruptSec": null,
+    "jumpCuts": false,
+    "removeSilences": "normal",
+    "removeFillers": true,
+    "removeBadTakes": true,
+    "jlCutMs": 400,
+    "snapToleranceMs": 60
+  },
+  "structure": [
+    {
+      "id": "intro",
+      "role": "intro",
+      "length": {
+        "bars": 2,
+        "flex": 0.4
+      },
+      "slots": {
+        "pick": [
+          "night-lights",
+          "establishing-wide"
+        ],
+        "count": "auto"
+      },
+      "beatsPerCut": 4
+    },
+    {
+      "id": "build",
+      "role": "build",
+      "length": {
+        "bars": 4,
+        "flex": 0.6
+      },
+      "slots": {
+        "pick": [
+          "night-lights",
+          "motion-high"
+        ],
+        "count": "auto"
+      },
+      "beatsPerCut": 2
+    },
+    {
+      "id": "drop",
+      "role": "drop",
+      "length": {
+        "rest": true
+      },
+      "slots": {
+        "pick": [
+          "motion-high",
+          "night-lights",
+          "people-group",
+          "talking"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      },
+      "beatsPerCut": 1
+    },
+    {
+      "id": "outro",
+      "role": "outro",
+      "length": {
+        "bars": 2,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "night-lights",
+          "establishing-wide"
+        ],
+        "count": 1
+      }
+    }
+  ],
+  "transitions": {
+    "default": {
+      "type": "cut"
+    },
+    "palette": [
+      {
+        "type": "whip",
+        "durationBeats": 0.5,
+        "weight": 0.4,
+        "shader": "Directional"
+      },
+      {
+        "type": "zoom-in",
+        "durationBeats": 0.5,
+        "weight": 0.3,
+        "shader": "CrossZoom"
+      },
+      {
+        "type": "glitch",
+        "durationBeats": 0.25,
+        "weight": 0.15,
+        "shader": "GlitchDisplace"
+      },
+      {
+        "type": "blur",
+        "durationBeats": 0.5,
+        "weight": 0.15,
+        "shader": "LinearBlur"
+      }
+    ],
+    "onDrop": {
+      "type": "glitch",
+      "durationBeats": 0.25
+    },
+    "maxPer10s": 3
+  },
+  "color": {
+    "autoCorrect": true,
+    "matchShots": true,
+    "lut": {
+      "id": "vlogup-neon-night",
+      "strength": 0.8
+    },
+    "adjust": {
+      "contrast": 0.2,
+      "saturation": 0.1,
+      "shadows": -0.1,
+      "bloom": 0.35,
+      "grain": 0.1,
+      "chromaticAberration": 0.15
+    }
+  },
+  "motion": {
+    "reframe": "subject",
+    "kenBurns": {
+      "on": true,
+      "scaleFrom": 1.0,
+      "scaleTo": 1.1,
+      "direction": "in"
+    },
+    "punchIn": {
+      "on": true,
+      "scale": 1.15,
+      "trigger": "downbeat",
+      "durationSec": 0.4,
+      "maxPer10s": 2,
+      "ease": "expo-in-out"
+    },
+    "speedRamps": [
+      {
+        "trigger": "action",
+        "curve": "hyperlapse",
+        "fromSpeed": 1,
+        "toSpeed": 6,
+        "durationBeats": 4,
+        "ease": "expo-in-out",
+        "probability": 0.5
+      },
+      {
+        "trigger": "drop",
+        "curve": "ramp-in",
+        "fromSpeed": 0.5,
+        "toSpeed": 2,
+        "durationBeats": 2,
+        "ease": "expo-in-out"
+      }
+    ],
+    "shake": {
+      "on": true,
+      "trigger": "drop",
+      "intensity": 0.2
+    }
+  },
+  "captions": {
+    "mode": "keywords-only",
+    "style": "clean",
+    "font": {
+      "family": "Space Grotesk",
+      "weight": 600,
+      "sizePct": 4.5
+    },
+    "case": "upper",
+    "wordsPerCard": 3,
+    "position": "auto",
+    "faceSafe": true,
+    "textColor": "#FFFFFF",
+    "highlight": {
+      "color": "#FF3CAC",
+      "keywords": "auto",
+      "scale": 1.1
+    },
+    "emoji": "off",
+    "animation": "slide-up"
+  },
+  "textOverlays": [
+    {
+      "role": "title",
+      "at": "section:intro",
+      "textSource": "location",
+      "maxChars": 14,
+      "font": {
+        "family": "Bebas Neue",
+        "weight": 400,
+        "sizePct": 14
+      },
+      "color": "#FFFFFF",
+      "position": "center",
+      "animation": "mask-reveal",
+      "durationBeats": 8,
+      "background": "none"
+    },
+    {
+      "role": "time-stamp",
+      "at": "section:build",
+      "textSource": "time",
+      "font": {
+        "family": "Space Grotesk",
+        "weight": 500,
+        "sizePct": 3.5
+      },
+      "color": "#5EF2FF",
+      "position": "upper-right",
+      "animation": "typewriter",
+      "durationSec": 2.5
+    }
+  ],
+  "sfx": {
+    "density": "medium",
+    "gainDb": -12,
+    "cues": [
+      {
+        "on": "transition:whip",
+        "sound": "whoosh-short"
+      },
+      {
+        "on": "transition:glitch",
+        "sound": "vhs-glitch",
+        "gainDb": -16
+      },
+      {
+        "on": "before-drop",
+        "sound": "riser",
+        "offsetMs": -2000
+      },
+      {
+        "on": "drop",
+        "sound": "bass-hit"
+      }
+    ]
+  },
+  "audio": {
+    "originalAudio": "ambient-low",
+    "voiceClean": "normal",
+    "voiceEQ": "natural",
+    "loudnessLUFS": -14,
+    "truePeakDb": -1
+  },
+  "intro": {
+    "type": "title-card",
+    "durationSec": 3,
+    "textSource": "ai"
+  },
+  "outro": {
+    "type": "fade-black",
+    "durationSec": 1.5
+  },
+  "constraints": {
+    "maxEffectsPer10s": 5,
+    "minClipQuality": "no-blur",
+    "avoid": [
+      "daylight clips unless needed",
+      "pastel grade"
+    ]
+  },
+  "assets": {
+    "luts": [
+      "vlogup-neon-night"
+    ],
+    "sfx": [
+      "whoosh-short",
+      "vhs-glitch",
+      "riser",
+      "bass-hit"
+    ],
+    "fonts": [
+      "Bebas Neue",
+      "Space Grotesk"
+    ],
+    "musicTags": [
+      "retro-synth",
+      "hiphop"
+    ]
+  },
+  "preview": {
+    "thumbnail": "previews/city-night.webp",
+    "demo": "previews/city-night.mp4"
+  }
+}

@@ -1,0 +1,359 @@
+{
+  "$schema": "./template.schema.json",
+  "schemaVersion": "1.0",
+  "author": "VlogUp contributors",
+  "license": "MIT",
+  "origin": "builtin",
+  "id": "fast-daily",
+  "name": "Fast Daily",
+  "category": "daily",
+  "description": "Punchy everyday vlog: jump cuts, quick b-roll bursts, whips and bold captions. Talking plus life clips.",
+  "tags": [
+    "daily",
+    "jump-cuts",
+    "energetic",
+    "talking"
+  ],
+  "inspiredBy": "Fast-paced NYC-style daily vlogs (Casey Neistat-like energy): handheld, jump-cut talking, time-lapse and quick b-roll bursts.",
+  "stylePrompt": "Edit this as a fast, energetic daily vlog. Keep my talking parts but cut every pause and filler with tight jump cuts. Every 3 seconds or so, change something: a punch-in, a quick b-roll burst, a whip transition or a pop of text. Use upbeat music ducked under my voice, bold white captions with yellow keywords, and snappy whoosh/pop sound effects. Add a quick hook in the first 3 seconds from the most exciting moment. Slightly contrasty, clean colour.",
+  "aiHints": [
+    "Open with the most exciting 2-3 s moment, then 'let me show you'",
+    "B-roll bursts: 3-5 shots of 0.4-0.8 s on beats between talking parts",
+    "Use a hyperlapse ramp on walking or travel clips"
+  ],
+  "format": {
+    "aspect": "9:16",
+    "alsoExport": [
+      "16:9"
+    ],
+    "duration": {
+      "mode": "fit-footage",
+      "minSec": 30,
+      "maxSec": 900
+    }
+  },
+  "footage": {
+    "kind": "mixed",
+    "minClips": 3,
+    "idealClips": 15,
+    "photos": "allowed",
+    "reuse": "never",
+    "orderPolicy": "chronological"
+  },
+  "music": {
+    "source": "user-or-library",
+    "mood": [
+      "upbeat",
+      "hiphop",
+      "electronic"
+    ],
+    "bpmRange": [
+      95,
+      125
+    ],
+    "energyCurve": "wave",
+    "startAt": "auto",
+    "fadeInSec": 0.3,
+    "fadeOutSec": 1.5,
+    "volumeDb": -14,
+    "duckUnderSpeechDb": -16,
+    "endOnPhrase": true
+  },
+  "rhythm": {
+    "cutOn": "speech",
+    "beatsPerCut": [
+      1,
+      2
+    ],
+    "minShotSec": 0.4,
+    "maxShotSec": 4,
+    "patternInterruptSec": 3,
+    "jumpCuts": true,
+    "removeSilences": "tight",
+    "removeFillers": true,
+    "removeBadTakes": true,
+    "jlCutMs": 250,
+    "snapToleranceMs": 120
+  },
+  "structure": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "length": {
+        "sec": 3,
+        "flex": 0.3
+      },
+      "slots": {
+        "pick": [
+          "best-moment",
+          "action"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      },
+      "beatsPerCut": 1
+    },
+    {
+      "id": "intro",
+      "role": "intro",
+      "length": {
+        "sec": 4,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "face",
+          "talking"
+        ],
+        "count": 1,
+        "allowSpeech": true
+      },
+      "transitionIn": {
+        "type": "whip",
+        "durationBeats": 0.5,
+        "direction": "auto"
+      }
+    },
+    {
+      "id": "body",
+      "role": "body",
+      "length": {
+        "rest": true
+      },
+      "slots": {
+        "pick": [
+          "talking",
+          "action",
+          "detail-closeup",
+          "any"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      }
+    },
+    {
+      "id": "outro",
+      "role": "outro",
+      "length": {
+        "sec": 4,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "face",
+          "scenic"
+        ],
+        "count": 1,
+        "allowSpeech": true
+      }
+    }
+  ],
+  "transitions": {
+    "default": {
+      "type": "cut"
+    },
+    "palette": [
+      {
+        "type": "whip",
+        "durationBeats": 0.5,
+        "weight": 0.5,
+        "shader": "Directional"
+      },
+      {
+        "type": "zoom-in",
+        "durationBeats": 0.5,
+        "weight": 0.3,
+        "shader": "CrossZoom"
+      },
+      {
+        "type": "flash",
+        "durationSec": 0.15,
+        "weight": 0.2,
+        "shader": "FlashFade"
+      }
+    ],
+    "onSectionChange": {
+      "type": "whip",
+      "durationBeats": 0.5
+    },
+    "maxPer10s": 2,
+    "avoidOnFaces": true
+  },
+  "color": {
+    "autoCorrect": true,
+    "matchShots": true,
+    "lut": {
+      "id": "vlogup-punch",
+      "strength": 0.6
+    },
+    "adjust": {
+      "contrast": 0.15,
+      "saturation": 0.1,
+      "sharpen": 0.2,
+      "vignette": 0.1
+    }
+  },
+  "motion": {
+    "reframe": "face",
+    "kenBurns": {
+      "on": true,
+      "scaleFrom": 1.0,
+      "scaleTo": 1.08,
+      "direction": "alternate"
+    },
+    "punchIn": {
+      "on": true,
+      "scale": 1.18,
+      "trigger": "emphasis",
+      "durationSec": 1.2,
+      "maxPer10s": 2,
+      "ease": "expo-in-out"
+    },
+    "speedRamps": [
+      {
+        "trigger": "action",
+        "curve": "hyperlapse",
+        "fromSpeed": 1,
+        "toSpeed": 4,
+        "durationBeats": 4,
+        "ease": "ease-in-out",
+        "probability": 0.3
+      }
+    ],
+    "shake": {
+      "on": true,
+      "trigger": "punch-in",
+      "intensity": 0.15
+    }
+  },
+  "captions": {
+    "mode": "speech",
+    "style": "bold-pop",
+    "font": {
+      "family": "Montserrat",
+      "weight": 800,
+      "sizePct": 6
+    },
+    "case": "upper",
+    "wordsPerCard": 3,
+    "position": "auto",
+    "faceSafe": true,
+    "textColor": "#FFFFFF",
+    "strokeColor": "#000000",
+    "highlight": {
+      "color": "#FFD400",
+      "keywords": "auto",
+      "scale": 1.15
+    },
+    "emoji": "sparse",
+    "animation": "pop"
+  },
+  "textOverlays": [
+    {
+      "role": "location",
+      "at": "section:intro",
+      "textSource": "location",
+      "maxChars": 24,
+      "font": {
+        "family": "Bebas Neue",
+        "weight": 400,
+        "sizePct": 7
+      },
+      "color": "#FFFFFF",
+      "position": "upper-left",
+      "animation": "slide-left",
+      "durationSec": 2.5,
+      "background": "box"
+    },
+    {
+      "role": "time-stamp",
+      "at": "auto",
+      "textSource": "time",
+      "font": {
+        "family": "Space Grotesk",
+        "weight": 600,
+        "sizePct": 4
+      },
+      "color": "#FFFFFF",
+      "position": "upper-right",
+      "animation": "typewriter",
+      "durationSec": 1.5,
+      "background": "none"
+    }
+  ],
+  "sfx": {
+    "density": "high",
+    "gainDb": -10,
+    "cues": [
+      {
+        "on": "transition:whip",
+        "sound": "whoosh-short"
+      },
+      {
+        "on": "text-in",
+        "sound": "pop",
+        "gainDb": -14
+      },
+      {
+        "on": "punch-in",
+        "sound": "bass-hit",
+        "gainDb": -14,
+        "probability": 0.5
+      },
+      {
+        "on": "speed-ramp",
+        "sound": "whoosh-long"
+      }
+    ]
+  },
+  "audio": {
+    "originalAudio": "keep",
+    "voiceClean": "normal",
+    "voiceEQ": "broadcast",
+    "loudnessLUFS": -14,
+    "truePeakDb": -1
+  },
+  "intro": {
+    "type": "cold-open",
+    "durationSec": 3
+  },
+  "outro": {
+    "type": "subscribe-card",
+    "durationSec": 3,
+    "textSource": "channel-name",
+    "sfx": "ding"
+  },
+  "constraints": {
+    "maxEffectsPer10s": 5,
+    "minClipQuality": "no-blur",
+    "avoid": [
+      "transitions in the middle of a sentence",
+      "glitch on faces"
+    ]
+  },
+  "assets": {
+    "luts": [
+      "vlogup-punch"
+    ],
+    "sfx": [
+      "whoosh-short",
+      "whoosh-long",
+      "pop",
+      "bass-hit",
+      "ding"
+    ],
+    "fonts": [
+      "Montserrat",
+      "Bebas Neue",
+      "Space Grotesk"
+    ],
+    "musicTags": [
+      "upbeat",
+      "hiphop"
+    ]
+  },
+  "preview": {
+    "thumbnail": "previews/fast-daily.webp",
+    "demo": "previews/fast-daily.mp4"
+  }
+}

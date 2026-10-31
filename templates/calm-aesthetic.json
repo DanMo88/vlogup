@@ -1,0 +1,283 @@
+{
+  "$schema": "./template.schema.json",
+  "schemaVersion": "1.0",
+  "author": "VlogUp contributors",
+  "license": "MIT",
+  "origin": "builtin",
+  "id": "calm-aesthetic",
+  "name": "Calm Aesthetic",
+  "category": "aesthetic",
+  "description": "Slow, soft and cosy: long takes, gentle crossfades, faded film tones, small serif text and lo-fi music.",
+  "tags": [
+    "aesthetic",
+    "slow",
+    "cozy",
+    "lofi"
+  ],
+  "inspiredBy": "Slow-living / aesthetic vlogs: natural sound, soft pastel grade, quiet typography, no SFX clutter.",
+  "stylePrompt": "Make a calm, aesthetic vlog. Use long, steady shots of 3-6 seconds with gentle crossfades. Keep natural ambient sounds softly under quiet lo-fi or acoustic music. Soft, slightly faded warm film look with gentle grain. Small lowercase serif captions only for meaningful lines, and tiny time-of-day labels. No zooms, no whooshes, nothing loud.",
+  "aiHints": [
+    "Prefer stable, low-motion clips; drop shaky ones",
+    "Group shots by time of day (morning to night)",
+    "Detail close-ups (hands, coffee, plants) are gold"
+  ],
+  "format": {
+    "aspect": "9:16",
+    "alsoExport": [
+      "16:9"
+    ],
+    "duration": {
+      "mode": "fit-music",
+      "minSec": 30,
+      "maxSec": 600
+    },
+    "fps": 24
+  },
+  "footage": {
+    "kind": "mixed",
+    "minClips": 5,
+    "idealClips": 18,
+    "photos": "allowed",
+    "reuse": "never",
+    "orderPolicy": "chronological"
+  },
+  "music": {
+    "source": "user-or-library",
+    "mood": [
+      "lofi",
+      "acoustic",
+      "chill"
+    ],
+    "bpmRange": [
+      60,
+      90
+    ],
+    "energyCurve": "calm",
+    "startAt": "track-start",
+    "fadeInSec": 2,
+    "fadeOutSec": 4,
+    "volumeDb": -16,
+    "duckUnderSpeechDb": -10,
+    "endOnPhrase": true
+  },
+  "rhythm": {
+    "cutOn": "bar",
+    "beatsPerCut": [
+      4,
+      8
+    ],
+    "minShotSec": 2.5,
+    "maxShotSec": 7,
+    "patternInterruptSec": null,
+    "jumpCuts": false,
+    "removeSilences": "gentle",
+    "removeFillers": true,
+    "removeBadTakes": true,
+    "jlCutMs": 800,
+    "snapToleranceMs": 150
+  },
+  "structure": [
+    {
+      "id": "intro",
+      "role": "intro",
+      "length": {
+        "bars": 2,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "detail-closeup",
+          "motion-low"
+        ],
+        "count": "auto"
+      }
+    },
+    {
+      "id": "body",
+      "role": "body",
+      "length": {
+        "rest": true
+      },
+      "slots": {
+        "pick": [
+          "motion-low",
+          "detail-closeup",
+          "scenic",
+          "talking"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      }
+    },
+    {
+      "id": "outro",
+      "role": "outro",
+      "length": {
+        "bars": 2,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "motion-low",
+          "golden-hour"
+        ],
+        "count": 1
+      }
+    }
+  ],
+  "transitions": {
+    "default": {
+      "type": "crossfade",
+      "durationSec": 0.8,
+      "shader": "Fade"
+    },
+    "palette": [
+      {
+        "type": "crossfade",
+        "durationSec": 0.8,
+        "weight": 0.8
+      },
+      {
+        "type": "dip-white",
+        "durationSec": 0.8,
+        "weight": 0.2,
+        "shader": "FadeColor"
+      }
+    ],
+    "maxPer10s": 3,
+    "avoidOnFaces": false
+  },
+  "color": {
+    "autoCorrect": true,
+    "matchShots": true,
+    "lut": {
+      "id": "vlogup-soft-film",
+      "strength": 0.7
+    },
+    "adjust": {
+      "contrast": -0.1,
+      "saturation": -0.15,
+      "temperature": 0.08,
+      "fade": 0.2,
+      "grain": 0.12,
+      "highlights": -0.1
+    }
+  },
+  "motion": {
+    "reframe": "center",
+    "kenBurns": {
+      "on": true,
+      "scaleFrom": 1.0,
+      "scaleTo": 1.04,
+      "direction": "in"
+    },
+    "punchIn": {
+      "on": false
+    },
+    "speedRamps": [],
+    "shake": {
+      "on": false
+    }
+  },
+  "captions": {
+    "mode": "speech",
+    "style": "serif-subtle",
+    "font": {
+      "family": "Cormorant Garamond",
+      "weight": 500,
+      "sizePct": 3.5
+    },
+    "case": "lower",
+    "wordsPerCard": 7,
+    "position": "lower-third",
+    "faceSafe": true,
+    "textColor": "#FFFDF7",
+    "emoji": "off",
+    "animation": "fade"
+  },
+  "textOverlays": [
+    {
+      "role": "time-stamp",
+      "at": "every-section",
+      "textSource": "time",
+      "font": {
+        "family": "Cormorant Garamond",
+        "weight": 400,
+        "sizePct": 3
+      },
+      "color": "#FFFDF7",
+      "position": "lower-left",
+      "animation": "fade",
+      "durationSec": 2.5,
+      "background": "none"
+    },
+    {
+      "role": "title",
+      "at": "section:intro",
+      "textSource": "ai",
+      "maxChars": 28,
+      "font": {
+        "family": "Cormorant Garamond",
+        "weight": 500,
+        "sizePct": 6,
+        "italic": true
+      },
+      "color": "#FFFDF7",
+      "position": "center",
+      "animation": "blur-in",
+      "durationSec": 3,
+      "background": "none"
+    }
+  ],
+  "sfx": {
+    "density": "none",
+    "cues": []
+  },
+  "audio": {
+    "originalAudio": "ambient-low",
+    "voiceClean": "light",
+    "voiceEQ": "warm",
+    "loudnessLUFS": -16,
+    "truePeakDb": -1.5
+  },
+  "intro": {
+    "type": "title-card",
+    "durationSec": 3,
+    "textSource": "ai"
+  },
+  "outro": {
+    "type": "fade-black",
+    "durationSec": 3
+  },
+  "constraints": {
+    "maxEffectsPer10s": 1,
+    "minClipQuality": "no-blur",
+    "avoid": [
+      "whoosh",
+      "glitch",
+      "punch-ins",
+      "upper-case captions",
+      "emoji"
+    ]
+  },
+  "assets": {
+    "luts": [
+      "vlogup-soft-film"
+    ],
+    "sfx": [],
+    "fonts": [
+      "Cormorant Garamond"
+    ],
+    "overlays": [
+      "film-grain"
+    ],
+    "musicTags": [
+      "lofi",
+      "acoustic"
+    ]
+  },
+  "preview": {
+    "thumbnail": "previews/calm-aesthetic.webp",
+    "demo": "previews/calm-aesthetic.mp4"
+  }
+}

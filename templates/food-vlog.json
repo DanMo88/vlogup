@@ -1,0 +1,325 @@
+{
+  "$schema": "./template.schema.json",
+  "schemaVersion": "1.0",
+  "author": "VlogUp contributors",
+  "license": "MIT",
+  "origin": "builtin",
+  "id": "food-vlog",
+  "name": "Food Tour",
+  "category": "food",
+  "description": "Mouth-watering food vlog: sizzle close-ups, slow-mo pours, quick bite reactions, warm saturated look and name/price labels.",
+  "tags": [
+    "food",
+    "restaurant",
+    "closeups",
+    "reactions"
+  ],
+  "inspiredBy": "Food-tour and street-food vlogs: macro close-ups, slow-motion steam/pours, reaction punch-ins, name-and-price lower thirds.",
+  "stylePrompt": "Edit this as a mouth-watering food vlog. For each dish: an establishing shot of the place with its name, fast close-ups of the food on the beat, one slow-motion hero moment (pour, cheese pull, steam), then my first-bite reaction with a punch-in. Warm, saturated, appetising colour. Lower-third labels with the dish name and price when I mention them. Upbeat, playful music ducked under my voice; pop sounds on text.",
+  "aiHints": [
+    "Group clips per venue/dish; each group is a mini-story",
+    "Detect hero food moments (high-motion close-ups) and slow them to 0.5x",
+    "Reaction = face clip right after a food close-up"
+  ],
+  "format": {
+    "aspect": "9:16",
+    "alsoExport": [
+      "16:9"
+    ],
+    "duration": {
+      "mode": "fit-footage",
+      "minSec": 20,
+      "maxSec": 900
+    },
+    "fps": 30
+  },
+  "footage": {
+    "kind": "mixed",
+    "minClips": 4,
+    "idealClips": 20,
+    "photos": "allowed",
+    "reuse": "never",
+    "orderPolicy": "story"
+  },
+  "music": {
+    "source": "user-or-library",
+    "mood": [
+      "playful",
+      "upbeat",
+      "jazzy"
+    ],
+    "bpmRange": [
+      95,
+      125
+    ],
+    "energyCurve": "wave",
+    "startAt": "auto",
+    "fadeInSec": 0.5,
+    "fadeOutSec": 2,
+    "volumeDb": -15,
+    "duckUnderSpeechDb": -16,
+    "endOnPhrase": true
+  },
+  "rhythm": {
+    "cutOn": "beat",
+    "beatsPerCut": [
+      1,
+      2
+    ],
+    "minShotSec": 0.4,
+    "maxShotSec": 4,
+    "patternInterruptSec": 3,
+    "jumpCuts": true,
+    "removeSilences": "normal",
+    "removeFillers": true,
+    "removeBadTakes": true,
+    "jlCutMs": 300,
+    "snapToleranceMs": 100
+  },
+  "structure": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "length": {
+        "sec": 2.5,
+        "flex": 0.3
+      },
+      "slots": {
+        "pick": [
+          "food",
+          "detail-closeup"
+        ],
+        "count": "auto"
+      },
+      "beatsPerCut": 0.5,
+      "note": "Rapid best-bites montage"
+    },
+    {
+      "id": "body",
+      "role": "body",
+      "length": {
+        "rest": true
+      },
+      "slots": {
+        "pick": [
+          "establishing-wide",
+          "food",
+          "detail-closeup",
+          "face",
+          "talking"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      }
+    },
+    {
+      "id": "outro",
+      "role": "outro",
+      "length": {
+        "sec": 4,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "face",
+          "food"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      }
+    }
+  ],
+  "transitions": {
+    "default": {
+      "type": "cut"
+    },
+    "palette": [
+      {
+        "type": "whip",
+        "durationBeats": 0.5,
+        "weight": 0.4,
+        "shader": "Directional"
+      },
+      {
+        "type": "zoom-in",
+        "durationBeats": 0.5,
+        "weight": 0.3,
+        "shader": "SimpleZoom"
+      },
+      {
+        "type": "slide",
+        "durationBeats": 0.5,
+        "weight": 0.3,
+        "direction": "left"
+      }
+    ],
+    "onSectionChange": {
+      "type": "whip",
+      "durationBeats": 0.5
+    },
+    "maxPer10s": 2
+  },
+  "color": {
+    "autoCorrect": true,
+    "matchShots": true,
+    "lut": {
+      "id": "vlogup-food-warm",
+      "strength": 0.7
+    },
+    "adjust": {
+      "saturation": 0.15,
+      "vibrance": 0.2,
+      "temperature": 0.1,
+      "contrast": 0.1,
+      "sharpen": 0.3
+    }
+  },
+  "motion": {
+    "reframe": "subject",
+    "kenBurns": {
+      "on": true,
+      "scaleFrom": 1.0,
+      "scaleTo": 1.1,
+      "direction": "in"
+    },
+    "punchIn": {
+      "on": true,
+      "scale": 1.2,
+      "trigger": "emphasis",
+      "durationSec": 1,
+      "maxPer10s": 2,
+      "ease": "back-out"
+    },
+    "speedRamps": [
+      {
+        "trigger": "action",
+        "curve": "slowmo-hold",
+        "fromSpeed": 1,
+        "toSpeed": 0.5,
+        "durationBeats": 4,
+        "ease": "ease-in-out",
+        "probability": 0.6
+      }
+    ]
+  },
+  "captions": {
+    "mode": "speech",
+    "style": "boxed",
+    "font": {
+      "family": "Poppins",
+      "weight": 700,
+      "sizePct": 5
+    },
+    "case": "sentence",
+    "wordsPerCard": 3,
+    "position": "auto",
+    "faceSafe": true,
+    "textColor": "#1A1A1A",
+    "highlight": {
+      "color": "#FF5A1F",
+      "keywords": "auto",
+      "scale": 1.1
+    },
+    "emoji": "sparse",
+    "animation": "pop"
+  },
+  "textOverlays": [
+    {
+      "role": "lower-third",
+      "at": "auto",
+      "textSource": "transcript-keyword",
+      "maxChars": 30,
+      "font": {
+        "family": "Poppins",
+        "weight": 700,
+        "sizePct": 4
+      },
+      "color": "#FFFFFF",
+      "position": "lower-left",
+      "animation": "slide-up",
+      "durationSec": 3,
+      "background": "pill"
+    },
+    {
+      "role": "location",
+      "at": "every-section",
+      "textSource": "location",
+      "maxChars": 24,
+      "font": {
+        "family": "Pacifico",
+        "weight": 400,
+        "sizePct": 6
+      },
+      "color": "#FFFFFF",
+      "position": "top",
+      "animation": "pop",
+      "durationSec": 2.5,
+      "background": "none"
+    }
+  ],
+  "sfx": {
+    "density": "medium",
+    "gainDb": -12,
+    "cues": [
+      {
+        "on": "text-in",
+        "sound": "pop"
+      },
+      {
+        "on": "transition:whip",
+        "sound": "whoosh-short"
+      },
+      {
+        "on": "speed-ramp",
+        "sound": "sparkle",
+        "probability": 0.5
+      }
+    ]
+  },
+  "audio": {
+    "originalAudio": "keep",
+    "voiceClean": "normal",
+    "voiceEQ": "natural",
+    "loudnessLUFS": -14,
+    "truePeakDb": -1
+  },
+  "intro": {
+    "type": "hook-montage",
+    "durationSec": 2.5
+  },
+  "outro": {
+    "type": "end-card",
+    "durationSec": 3,
+    "textSource": "ai"
+  },
+  "constraints": {
+    "maxEffectsPer10s": 4,
+    "minClipQuality": "no-blur-no-dark",
+    "avoid": [
+      "cool/blue grade on food",
+      "glitch"
+    ]
+  },
+  "assets": {
+    "luts": [
+      "vlogup-food-warm"
+    ],
+    "sfx": [
+      "pop",
+      "whoosh-short",
+      "sparkle"
+    ],
+    "fonts": [
+      "Poppins",
+      "Pacifico"
+    ],
+    "musicTags": [
+      "playful",
+      "jazzy"
+    ]
+  },
+  "preview": {
+    "thumbnail": "previews/food-vlog.webp",
+    "demo": "previews/food-vlog.mp4"
+  }
+}

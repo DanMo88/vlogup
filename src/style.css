@@ -110,7 +110,7 @@ code { background: var(--bg3); padding: 1px 5px; border-radius: 5px; }
 .oname { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
 .tpl-list { list-style: none; padding: 0; display: grid; gap: 8px; }
 .tpl-list li { display: flex; flex-direction: column; gap: 2px; background: var(--bg3); border-radius: 12px; padding: 10px; position: relative; }
-.tpl-list .badge { position: absolute; right: 8px; top: 8px; }
+
 
 .chat { flex: none; display: flex; flex-direction: column; background: var(--bg2); border-top: 1px solid var(--line); border-radius: 18px 18px 0 0; padding: 0 10px calc(8px + var(--safe-b)); transition: max-height .2s; }
 .chat.half { height: 42%; } .chat.full { position: absolute; left: 0; right: 0; bottom: 0; height: 88%; z-index: 20; box-shadow: 0 -10px 30px rgba(0,0,0,.6); }
@@ -143,3 +143,7 @@ code { background: var(--bg3); padding: 1px 5px; border-radius: 5px; }
   .editor { max-width: 1100px; margin: 0 auto; border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
   .timeline { height: 150px; }
 }
+.tpl-list b { padding-right: 70px; }
+.tpl-meta { color: var(--accent); text-transform: capitalize; }
+.tpl-list .btn { align-self: flex-start; margin-top: 4px; }
+.soon-badge { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; border: 0; font-size: 11px; padding: 3px 8px; }

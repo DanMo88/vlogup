@@ -1,0 +1,244 @@
+{
+  "$schema": "./template.schema.json",
+  "schemaVersion": "1.0",
+  "author": "VlogUp contributors",
+  "license": "MIT",
+  "origin": "builtin",
+  "id": "story-shorts",
+  "name": "Storytime Short",
+  "category": "youtube",
+  "description": "Under-60-second vertical storytime: hook line, tight jump cuts, karaoke captions, b-roll on key words, loop-friendly ending.",
+  "tags": [
+    "shorts",
+    "reels",
+    "storytime",
+    "vertical",
+    "loop"
+  ],
+  "inspiredBy": "Top-performing talking Shorts/Reels: one story, under 60 s, karaoke captions, an ending that loops back to the start.",
+  "stylePrompt": "Cut this into a vertical short under 60 seconds that tells one story. Start with the most intriguing line as a hook (ideally a question). Tight jump cuts, no pauses. Karaoke-style captions in the centre with the current word highlighted. Drop in a b-roll clip or punch-in whenever I mention something visual. Quiet music under my voice. Make the last line flow back into the first so the video loops.",
+  "aiHints": [
+    "Pick the single best story arc if the footage has several",
+    "Hard limit 58 s",
+    "The last sentence should connect back to the hook for looping"
+  ],
+  "format": {
+    "aspect": "9:16",
+    "duration": {
+      "mode": "target",
+      "targetSec": 50,
+      "minSec": 15,
+      "maxSec": 58
+    },
+    "fps": 30
+  },
+  "footage": {
+    "kind": "talking",
+    "minClips": 1,
+    "idealClips": 6,
+    "photos": "allowed",
+    "reuse": "never",
+    "orderPolicy": "story"
+  },
+  "music": {
+    "source": "user-or-library",
+    "mood": [
+      "lofi",
+      "chill",
+      "playful"
+    ],
+    "bpmRange": [
+      80,
+      120
+    ],
+    "energyCurve": "steady",
+    "startAt": "auto",
+    "fadeInSec": 0,
+    "fadeOutSec": 0,
+    "volumeDb": -20,
+    "duckUnderSpeechDb": -22,
+    "endOnPhrase": false
+  },
+  "rhythm": {
+    "cutOn": "speech",
+    "minShotSec": 0.4,
+    "maxShotSec": 3,
+    "patternInterruptSec": 2.5,
+    "jumpCuts": true,
+    "removeSilences": "tight",
+    "removeFillers": true,
+    "removeBadTakes": true,
+    "jlCutMs": 120,
+    "snapToleranceMs": 80
+  },
+  "structure": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "length": {
+        "sec": 2.5,
+        "flex": 0.3
+      },
+      "slots": {
+        "pick": [
+          "best-moment",
+          "talking"
+        ],
+        "count": 1,
+        "allowSpeech": true
+      }
+    },
+    {
+      "id": "story",
+      "role": "body",
+      "length": {
+        "rest": true
+      },
+      "slots": {
+        "pick": [
+          "talking",
+          "detail-closeup",
+          "action"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      }
+    },
+    {
+      "id": "payoff",
+      "role": "payoff",
+      "length": {
+        "sec": 5,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "talking",
+          "best-moment"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      }
+    }
+  ],
+  "transitions": {
+    "default": {
+      "type": "cut"
+    },
+    "palette": [
+      {
+        "type": "cut",
+        "weight": 0.8
+      },
+      {
+        "type": "zoom-in",
+        "durationBeats": 0.25,
+        "weight": 0.2,
+        "shader": "SimpleZoom"
+      }
+    ],
+    "maxPer10s": 2
+  },
+  "color": {
+    "autoCorrect": true,
+    "matchShots": true,
+    "lut": {
+      "id": "vlogup-clean-bright",
+      "strength": 0.5
+    },
+    "adjust": {
+      "contrast": 0.1,
+      "sharpen": 0.2
+    }
+  },
+  "motion": {
+    "reframe": "face",
+    "punchIn": {
+      "on": true,
+      "scale": 1.2,
+      "trigger": "interrupt",
+      "durationSec": 1.5,
+      "maxPer10s": 3,
+      "ease": "ease-in-out"
+    },
+    "speedRamps": [],
+    "shake": {
+      "on": false
+    }
+  },
+  "captions": {
+    "mode": "speech",
+    "style": "karaoke",
+    "font": {
+      "family": "Montserrat",
+      "weight": 900,
+      "sizePct": 6.5
+    },
+    "case": "upper",
+    "wordsPerCard": 3,
+    "position": "center",
+    "faceSafe": true,
+    "textColor": "#FFFFFF",
+    "strokeColor": "#000000",
+    "highlight": {
+      "color": "#3CF06E",
+      "keywords": "every-card",
+      "scale": 1.1
+    },
+    "emoji": "sparse",
+    "animation": "karaoke"
+  },
+  "textOverlays": [],
+  "sfx": {
+    "density": "low",
+    "gainDb": -14,
+    "cues": [
+      {
+        "on": "punch-in",
+        "sound": "whoosh-short",
+        "probability": 0.3
+      }
+    ]
+  },
+  "audio": {
+    "originalAudio": "keep",
+    "voiceClean": "strong",
+    "voiceEQ": "broadcast",
+    "loudnessLUFS": -14,
+    "truePeakDb": -1
+  },
+  "intro": {
+    "type": "none"
+  },
+  "outro": {
+    "type": "loop-to-start"
+  },
+  "constraints": {
+    "maxEffectsPer10s": 4,
+    "minClipQuality": "any",
+    "avoid": [
+      "intro title",
+      "end card",
+      "anything over 58 s"
+    ]
+  },
+  "assets": {
+    "luts": [
+      "vlogup-clean-bright"
+    ],
+    "sfx": [
+      "whoosh-short"
+    ],
+    "fonts": [
+      "Montserrat"
+    ],
+    "musicTags": [
+      "lofi",
+      "chill"
+    ]
+  },
+  "preview": {
+    "thumbnail": "previews/story-shorts.webp",
+    "demo": "previews/story-shorts.mp4"
+  }
+}

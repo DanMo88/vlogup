@@ -1,0 +1,394 @@
+{
+  "$schema": "./template.schema.json",
+  "schemaVersion": "1.0",
+  "author": "VlogUp contributors",
+  "license": "MIT",
+  "origin": "builtin",
+  "id": "cinematic-travel",
+  "name": "Cinematic Travel",
+  "category": "travel",
+  "description": "Epic travel film: wide establishing shots, beat-synced b-roll, speed ramps on the drop, teal-orange grade, letterbox.",
+  "tags": [
+    "travel",
+    "cinematic",
+    "beat-sync",
+    "letterbox"
+  ],
+  "inspiredBy": "Popular cinematic travel and 'summer vlog' montage styles: slow build, music drop, speed ramps, film grade, minimal text.",
+  "stylePrompt": "Turn my clips into a cinematic travel film. Open slowly on the most scenic wide shot with a big serif title of the place. Build with longer shots, then on the music drop cut fast on the beat with speed ramps and smooth whip/zoom transitions. Grade everything with a warm teal-orange film look, light grain and 2.39:1 letterbox bars. Keep my voice only if I say something meaningful (as an L-cut over b-roll). End on a slow, beautiful shot that fades to black.",
+  "aiHints": [
+    "Rank shots by scenic score; open with establishing-wide",
+    "Place people/face shots near the payoff for emotion",
+    "Use golden-hour clips at the end"
+  ],
+  "format": {
+    "aspect": "16:9",
+    "alsoExport": [
+      "9:16"
+    ],
+    "duration": {
+      "mode": "fit-music",
+      "minSec": 30,
+      "maxSec": 180
+    },
+    "fps": 24
+  },
+  "footage": {
+    "kind": "montage",
+    "minClips": 8,
+    "idealClips": 25,
+    "photos": "avoid",
+    "reuse": "if-short",
+    "orderPolicy": "story"
+  },
+  "music": {
+    "source": "user-or-library",
+    "mood": [
+      "cinematic",
+      "epic",
+      "electronic"
+    ],
+    "bpmRange": [
+      80,
+      128
+    ],
+    "energyCurve": "build-drop",
+    "startAt": "auto",
+    "fadeInSec": 1.5,
+    "fadeOutSec": 3,
+    "volumeDb": -10,
+    "duckUnderSpeechDb": -12,
+    "endOnPhrase": true
+  },
+  "rhythm": {
+    "cutOn": "beat",
+    "beatsPerCut": [
+      2,
+      4
+    ],
+    "minShotSec": 0.35,
+    "maxShotSec": 6,
+    "patternInterruptSec": null,
+    "jumpCuts": false,
+    "removeSilences": "off",
+    "removeFillers": false,
+    "removeBadTakes": true,
+    "jlCutMs": 600,
+    "snapToleranceMs": 60
+  },
+  "structure": [
+    {
+      "id": "intro",
+      "role": "intro",
+      "length": {
+        "bars": 4,
+        "flex": 0.4
+      },
+      "slots": {
+        "pick": [
+          "establishing-wide",
+          "scenic"
+        ],
+        "count": "auto"
+      },
+      "beatsPerCut": [
+        4,
+        8
+      ],
+      "speed": 0.8
+    },
+    {
+      "id": "build",
+      "role": "build",
+      "length": {
+        "bars": 8,
+        "flex": 0.6
+      },
+      "slots": {
+        "pick": [
+          "scenic",
+          "detail-closeup",
+          "people-group"
+        ],
+        "count": "auto"
+      },
+      "beatsPerCut": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": "drop",
+      "role": "drop",
+      "length": {
+        "bars": 8,
+        "flex": 0.6
+      },
+      "slots": {
+        "pick": [
+          "motion-high",
+          "action",
+          "transition-friendly"
+        ],
+        "count": "auto"
+      },
+      "beatsPerCut": [
+        0.5,
+        1
+      ],
+      "transitionIn": {
+        "type": "flash",
+        "durationSec": 0.12
+      }
+    },
+    {
+      "id": "payoff",
+      "role": "payoff",
+      "length": {
+        "rest": true
+      },
+      "slots": {
+        "pick": [
+          "face",
+          "golden-hour",
+          "scenic"
+        ],
+        "count": "auto"
+      },
+      "beatsPerCut": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": "outro",
+      "role": "outro",
+      "length": {
+        "bars": 2,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "golden-hour",
+          "establishing-wide"
+        ],
+        "count": 1
+      },
+      "speed": 0.7
+    }
+  ],
+  "transitions": {
+    "default": {
+      "type": "cut"
+    },
+    "palette": [
+      {
+        "type": "whip",
+        "durationBeats": 0.5,
+        "weight": 0.35,
+        "shader": "Directional"
+      },
+      {
+        "type": "zoom-in",
+        "durationBeats": 0.5,
+        "weight": 0.25,
+        "shader": "CrossZoom"
+      },
+      {
+        "type": "light-leak",
+        "durationBeats": 1,
+        "weight": 0.2
+      },
+      {
+        "type": "blur",
+        "durationBeats": 1,
+        "weight": 0.2,
+        "shader": "LinearBlur"
+      }
+    ],
+    "onDrop": {
+      "type": "flash",
+      "durationSec": 0.12,
+      "shader": "FlashFade"
+    },
+    "maxPer10s": 3,
+    "avoidOnFaces": true
+  },
+  "color": {
+    "autoCorrect": true,
+    "matchShots": true,
+    "lut": {
+      "id": "vlogup-teal-orange",
+      "strength": 0.75
+    },
+    "adjust": {
+      "contrast": 0.15,
+      "saturation": 0.05,
+      "highlights": -0.15,
+      "shadows": 0.05,
+      "grain": 0.15,
+      "vignette": 0.25,
+      "bloom": 0.1
+    },
+    "overlays": [
+      {
+        "id": "light-leak-warm",
+        "opacity": 0.5,
+        "blend": "screen",
+        "when": "transitions"
+      }
+    ],
+    "letterbox": 2.39,
+    "skinProtect": true
+  },
+  "motion": {
+    "reframe": "subject",
+    "kenBurns": {
+      "on": true,
+      "scaleFrom": 1.0,
+      "scaleTo": 1.06,
+      "direction": "in"
+    },
+    "punchIn": {
+      "on": false
+    },
+    "speedRamps": [
+      {
+        "trigger": "drop",
+        "curve": "ramp-in",
+        "fromSpeed": 0.4,
+        "toSpeed": 2.5,
+        "durationBeats": 2,
+        "ease": "expo-in-out"
+      },
+      {
+        "trigger": "every:4-cuts",
+        "curve": "montage-ramp",
+        "fromSpeed": 2,
+        "toSpeed": 0.5,
+        "durationBeats": 2,
+        "ease": "ease-in-out",
+        "probability": 0.5
+      }
+    ]
+  },
+  "captions": {
+    "mode": "keywords-only",
+    "style": "serif-subtle",
+    "font": {
+      "family": "Playfair Display",
+      "weight": 500,
+      "sizePct": 4
+    },
+    "case": "sentence",
+    "wordsPerCard": 6,
+    "position": "lower-third",
+    "faceSafe": true,
+    "textColor": "#F5F1E8",
+    "emoji": "off",
+    "animation": "fade"
+  },
+  "textOverlays": [
+    {
+      "role": "title",
+      "at": "section:intro",
+      "textSource": "location",
+      "maxChars": 18,
+      "font": {
+        "family": "Playfair Display",
+        "weight": 700,
+        "sizePct": 11
+      },
+      "color": "#F5F1E8",
+      "position": "center",
+      "animation": "letter-spread",
+      "durationBeats": 8,
+      "background": "none"
+    },
+    {
+      "role": "subtitle",
+      "at": "section:intro",
+      "textSource": "date",
+      "font": {
+        "family": "Inter",
+        "weight": 300,
+        "sizePct": 3
+      },
+      "color": "#F5F1E8",
+      "position": "center",
+      "animation": "fade",
+      "durationBeats": 8,
+      "background": "none"
+    }
+  ],
+  "sfx": {
+    "density": "low",
+    "gainDb": -14,
+    "cues": [
+      {
+        "on": "transition:whip",
+        "sound": "whoosh-long"
+      },
+      {
+        "on": "before-drop",
+        "sound": "riser",
+        "offsetMs": -2000
+      },
+      {
+        "on": "drop",
+        "sound": "bass-hit"
+      }
+    ]
+  },
+  "audio": {
+    "originalAudio": "ambient-low",
+    "voiceClean": "normal",
+    "voiceEQ": "warm",
+    "loudnessLUFS": -14,
+    "truePeakDb": -1
+  },
+  "intro": {
+    "type": "title-card",
+    "durationSec": 4,
+    "textSource": "ai"
+  },
+  "outro": {
+    "type": "fade-black",
+    "durationSec": 2
+  },
+  "constraints": {
+    "maxEffectsPer10s": 4,
+    "minClipQuality": "no-blur-no-dark",
+    "avoid": [
+      "emoji",
+      "bold pop captions",
+      "shaky clips on slow sections"
+    ]
+  },
+  "assets": {
+    "luts": [
+      "vlogup-teal-orange"
+    ],
+    "sfx": [
+      "whoosh-long",
+      "riser",
+      "bass-hit"
+    ],
+    "fonts": [
+      "Playfair Display",
+      "Inter"
+    ],
+    "overlays": [
+      "light-leak-warm",
+      "film-grain"
+    ],
+    "musicTags": [
+      "cinematic",
+      "epic"
+    ]
+  },
+  "preview": {
+    "thumbnail": "previews/cinematic-travel.webp",
+    "demo": "previews/cinematic-travel.mp4"
+  }
+}

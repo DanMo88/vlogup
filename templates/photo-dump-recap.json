@@ -1,0 +1,273 @@
+{
+  "$schema": "./template.schema.json",
+  "schemaVersion": "1.0",
+  "author": "VlogUp contributors",
+  "license": "MIT",
+  "origin": "builtin",
+  "id": "photo-dump-recap",
+  "name": "Photo Dump Recap",
+  "category": "recap",
+  "description": "Trendy photo-dump / month recap: fast mix of photos and clips on the beat, white-flash cuts, handwritten notes, film look.",
+  "tags": [
+    "recap",
+    "photo-dump",
+    "month",
+    "trend",
+    "photos"
+  ],
+  "inspiredBy": "'Photo dump', 'month recap' and 'travel dump' trend reels that mix many photos and short clips on the beat.",
+  "stylePrompt": "Make a trendy photo-dump recap from all my photos and clips. Every item on the beat, photos for one beat and clips for two, with a quick white flash between some cuts and a subtle Ken Burns move on photos. Warm film look with grain. A handwritten title like 'october dump' at the start and small handwritten notes on a few moments. Upbeat indie/pop music; end on the best photo with a freeze.",
+  "aiHints": [
+    "Use many items; drop photos only if blurry or duplicate",
+    "Alternate photo and video for variety",
+    "Remove near-duplicate photos (keep the best)"
+  ],
+  "format": {
+    "aspect": "9:16",
+    "alsoExport": [
+      "4:5"
+    ],
+    "duration": {
+      "mode": "fit-music",
+      "minSec": 8,
+      "maxSec": 60
+    }
+  },
+  "footage": {
+    "kind": "montage",
+    "minClips": 8,
+    "idealClips": 30,
+    "maxClips": 120,
+    "photos": "preferred",
+    "reuse": "never",
+    "orderPolicy": "chronological"
+  },
+  "music": {
+    "source": "user-or-library",
+    "mood": [
+      "pop",
+      "upbeat",
+      "acoustic"
+    ],
+    "bpmRange": [
+      95,
+      130
+    ],
+    "energyCurve": "steady",
+    "startAt": "best-section",
+    "fadeInSec": 0,
+    "fadeOutSec": 0.5,
+    "volumeDb": -9,
+    "endOnPhrase": true
+  },
+  "rhythm": {
+    "cutOn": "beat",
+    "beatsPerCut": [
+      1,
+      2
+    ],
+    "minShotSec": 0.25,
+    "maxShotSec": 1.5,
+    "patternInterruptSec": null,
+    "jumpCuts": false,
+    "removeSilences": "off",
+    "removeFillers": false,
+    "removeBadTakes": false,
+    "jlCutMs": 0,
+    "snapToleranceMs": 20
+  },
+  "structure": [
+    {
+      "id": "intro",
+      "role": "intro",
+      "length": {
+        "beats": 4,
+        "flex": 0.3
+      },
+      "slots": {
+        "pick": [
+          "best-moment"
+        ],
+        "count": 1
+      },
+      "beatsPerCut": 4
+    },
+    {
+      "id": "dump",
+      "role": "montage",
+      "length": {
+        "rest": true
+      },
+      "slots": {
+        "pick": [
+          "any"
+        ],
+        "count": "auto",
+        "clipIn": "peak-motion"
+      },
+      "beatsPerCut": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "outro",
+      "role": "outro",
+      "length": {
+        "beats": 4,
+        "flex": 0.3
+      },
+      "slots": {
+        "pick": [
+          "best-moment"
+        ],
+        "count": 1
+      }
+    }
+  ],
+  "transitions": {
+    "default": {
+      "type": "cut"
+    },
+    "palette": [
+      {
+        "type": "cut",
+        "weight": 0.6
+      },
+      {
+        "type": "dip-white",
+        "durationSec": 0.08,
+        "weight": 0.3,
+        "shader": "FlashFade"
+      },
+      {
+        "type": "slide",
+        "durationBeats": 0.25,
+        "weight": 0.1,
+        "direction": "left"
+      }
+    ],
+    "maxPer10s": 4
+  },
+  "color": {
+    "autoCorrect": true,
+    "matchShots": true,
+    "lut": {
+      "id": "vlogup-warm-film",
+      "strength": 0.7
+    },
+    "adjust": {
+      "grain": 0.2,
+      "fade": 0.1,
+      "temperature": 0.08,
+      "vignette": 0.1
+    }
+  },
+  "motion": {
+    "reframe": "subject",
+    "kenBurns": {
+      "on": true,
+      "scaleFrom": 1.0,
+      "scaleTo": 1.1,
+      "direction": "random"
+    },
+    "punchIn": {
+      "on": false
+    },
+    "speedRamps": [],
+    "shake": {
+      "on": false
+    }
+  },
+  "captions": {
+    "mode": "none"
+  },
+  "textOverlays": [
+    {
+      "role": "title",
+      "at": "start",
+      "textSource": "ai",
+      "maxChars": 20,
+      "font": {
+        "family": "Caveat",
+        "weight": 700,
+        "sizePct": 10
+      },
+      "color": "#FFFFFF",
+      "position": "center",
+      "animation": "handwrite",
+      "durationBeats": 4
+    },
+    {
+      "role": "label",
+      "at": "auto",
+      "textSource": "ai",
+      "maxChars": 18,
+      "font": {
+        "family": "Caveat",
+        "weight": 600,
+        "sizePct": 6
+      },
+      "color": "#FFFFFF",
+      "position": "auto",
+      "animation": "handwrite",
+      "durationBeats": 2
+    }
+  ],
+  "sfx": {
+    "density": "low",
+    "gainDb": -14,
+    "cues": [
+      {
+        "on": "transition:dip-white",
+        "sound": "camera-shutter",
+        "probability": 0.6
+      }
+    ]
+  },
+  "audio": {
+    "originalAudio": "mute",
+    "voiceClean": "off",
+    "voiceEQ": "off",
+    "loudnessLUFS": -13,
+    "truePeakDb": -1
+  },
+  "intro": {
+    "type": "none"
+  },
+  "outro": {
+    "type": "freeze-frame",
+    "durationSec": 1.5
+  },
+  "constraints": {
+    "maxEffectsPer10s": 4,
+    "minClipQuality": "no-blur",
+    "avoid": [
+      "speech",
+      "long clips",
+      "captions"
+    ]
+  },
+  "assets": {
+    "luts": [
+      "vlogup-warm-film"
+    ],
+    "sfx": [
+      "camera-shutter"
+    ],
+    "fonts": [
+      "Caveat"
+    ],
+    "overlays": [
+      "film-grain"
+    ],
+    "musicTags": [
+      "pop",
+      "acoustic"
+    ]
+  },
+  "preview": {
+    "thumbnail": "previews/photo-dump-recap.webp",
+    "demo": "previews/photo-dump-recap.mp4"
+  }
+}

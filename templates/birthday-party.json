@@ -1,0 +1,340 @@
+{
+  "$schema": "./template.schema.json",
+  "schemaVersion": "1.0",
+  "author": "VlogUp contributors",
+  "license": "MIT",
+  "origin": "builtin",
+  "id": "birthday-party",
+  "name": "Birthday & Party",
+  "category": "party",
+  "description": "Joyful party recap: bright colourful look, confetti pops, smiles and group shots on the beat, cake/candles as the slow-mo payoff.",
+  "tags": [
+    "birthday",
+    "party",
+    "celebration",
+    "friends"
+  ],
+  "inspiredBy": "Birthday / party recap reels: fun pop music, smiles and group shots, celebratory text and confetti.",
+  "stylePrompt": "Make a joyful birthday/party recap. Bright, colourful, happy look. Quick cuts on the beat between smiles, hugs, dancing and group shots. A big playful title with the person's name at the start ('Happy Birthday, ...'). Confetti-style pop sounds on text and a sparkle on reveals. Make the candle-blowing or toast the slow-motion payoff right on the music's biggest moment, with the cheering audio kept. End on the best group photo with a freeze-frame.",
+  "aiHints": [
+    "Detect cake/candles, cheering (loud crowd audio) and group shots",
+    "Payoff = candles/toast clip at 0.5x on the drop",
+    "Prefer smiling faces"
+  ],
+  "format": {
+    "aspect": "9:16",
+    "alsoExport": [
+      "16:9"
+    ],
+    "duration": {
+      "mode": "fit-music",
+      "minSec": 15,
+      "maxSec": 180
+    }
+  },
+  "footage": {
+    "kind": "montage",
+    "minClips": 6,
+    "idealClips": 20,
+    "photos": "preferred",
+    "reuse": "if-short",
+    "orderPolicy": "story"
+  },
+  "music": {
+    "source": "user-or-library",
+    "mood": [
+      "party",
+      "pop",
+      "playful"
+    ],
+    "bpmRange": [
+      100,
+      130
+    ],
+    "energyCurve": "build-drop",
+    "startAt": "auto",
+    "fadeInSec": 0.3,
+    "fadeOutSec": 2,
+    "volumeDb": -10,
+    "duckUnderSpeechDb": -10,
+    "endOnPhrase": true
+  },
+  "rhythm": {
+    "cutOn": "beat",
+    "beatsPerCut": [
+      1,
+      2
+    ],
+    "minShotSec": 0.3,
+    "maxShotSec": 3,
+    "patternInterruptSec": null,
+    "jumpCuts": false,
+    "removeSilences": "off",
+    "removeFillers": false,
+    "removeBadTakes": false,
+    "jlCutMs": 0,
+    "snapToleranceMs": 60
+  },
+  "structure": [
+    {
+      "id": "intro",
+      "role": "intro",
+      "length": {
+        "bars": 2,
+        "flex": 0.4
+      },
+      "slots": {
+        "pick": [
+          "face",
+          "people-group"
+        ],
+        "count": "auto"
+      },
+      "beatsPerCut": 2
+    },
+    {
+      "id": "body",
+      "role": "montage",
+      "length": {
+        "rest": true
+      },
+      "slots": {
+        "pick": [
+          "people-group",
+          "face",
+          "action",
+          "detail-closeup"
+        ],
+        "count": "auto"
+      }
+    },
+    {
+      "id": "payoff",
+      "role": "payoff",
+      "length": {
+        "bars": 2,
+        "flex": 0.4
+      },
+      "slots": {
+        "pick": [
+          "best-moment"
+        ],
+        "count": 1,
+        "allowSpeech": true
+      },
+      "speed": 0.5,
+      "musicGainDb": -6
+    },
+    {
+      "id": "outro",
+      "role": "outro",
+      "length": {
+        "bars": 1,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "people-group"
+        ],
+        "count": 1
+      }
+    }
+  ],
+  "transitions": {
+    "default": {
+      "type": "cut"
+    },
+    "palette": [
+      {
+        "type": "zoom-in",
+        "durationBeats": 0.5,
+        "weight": 0.3,
+        "shader": "SimpleZoom"
+      },
+      {
+        "type": "shape-wipe",
+        "durationBeats": 0.5,
+        "weight": 0.2,
+        "shader": "CircleOpen"
+      },
+      {
+        "type": "flash",
+        "durationSec": 0.1,
+        "weight": 0.3
+      },
+      {
+        "type": "spin",
+        "durationBeats": 0.5,
+        "weight": 0.2
+      }
+    ],
+    "onDrop": {
+      "type": "flash",
+      "durationSec": 0.12
+    },
+    "maxPer10s": 4
+  },
+  "color": {
+    "autoCorrect": true,
+    "matchShots": true,
+    "lut": {
+      "id": "vlogup-pop-bright",
+      "strength": 0.7
+    },
+    "adjust": {
+      "exposure": 0.05,
+      "saturation": 0.25,
+      "vibrance": 0.2,
+      "bloom": 0.1
+    }
+  },
+  "motion": {
+    "reframe": "face",
+    "kenBurns": {
+      "on": true,
+      "scaleFrom": 1.0,
+      "scaleTo": 1.12,
+      "direction": "alternate"
+    },
+    "punchIn": {
+      "on": true,
+      "scale": 1.15,
+      "trigger": "downbeat",
+      "durationSec": 0.4,
+      "maxPer10s": 3,
+      "ease": "back-out"
+    },
+    "speedRamps": [
+      {
+        "trigger": "drop",
+        "curve": "slowmo-hold",
+        "fromSpeed": 1,
+        "toSpeed": 0.5,
+        "durationBeats": 4,
+        "ease": "ease-in-out"
+      }
+    ],
+    "shake": {
+      "on": false
+    }
+  },
+  "captions": {
+    "mode": "keywords-only",
+    "style": "bold-pop",
+    "font": {
+      "family": "Fredoka",
+      "weight": 700,
+      "sizePct": 6
+    },
+    "case": "sentence",
+    "wordsPerCard": 3,
+    "position": "auto",
+    "faceSafe": true,
+    "textColor": "#FFFFFF",
+    "strokeColor": "#7A2BF5",
+    "highlight": {
+      "color": "#FFD400",
+      "keywords": "auto",
+      "scale": 1.15
+    },
+    "emoji": "frequent",
+    "animation": "bounce"
+  },
+  "textOverlays": [
+    {
+      "role": "title",
+      "at": "section:intro",
+      "textSource": "user",
+      "maxChars": 30,
+      "font": {
+        "family": "Pacifico",
+        "weight": 400,
+        "sizePct": 9
+      },
+      "color": "#FFFFFF",
+      "position": "center",
+      "animation": "bounce",
+      "durationBeats": 8,
+      "background": "none"
+    },
+    {
+      "role": "label",
+      "at": "section:payoff",
+      "textSource": "fixed",
+      "fixedText": "make a wish ✨",
+      "font": {
+        "family": "Fredoka",
+        "weight": 600,
+        "sizePct": 6
+      },
+      "color": "#FFFFFF",
+      "position": "bottom",
+      "animation": "pop",
+      "durationBeats": 4
+    }
+  ],
+  "sfx": {
+    "density": "medium",
+    "gainDb": -12,
+    "cues": [
+      {
+        "on": "text-in",
+        "sound": "confetti-pop"
+      },
+      {
+        "on": "section:payoff",
+        "sound": "sparkle"
+      },
+      {
+        "on": "transition:spin",
+        "sound": "whoosh-short"
+      }
+    ]
+  },
+  "audio": {
+    "originalAudio": "ambient-low",
+    "voiceClean": "off",
+    "voiceEQ": "off",
+    "loudnessLUFS": -14,
+    "truePeakDb": -1
+  },
+  "intro": {
+    "type": "title-card",
+    "durationSec": 3,
+    "textSource": "user"
+  },
+  "outro": {
+    "type": "freeze-frame",
+    "durationSec": 2.5
+  },
+  "constraints": {
+    "maxEffectsPer10s": 6,
+    "minClipQuality": "no-blur",
+    "avoid": [
+      "dark moody grade",
+      "glitch"
+    ]
+  },
+  "assets": {
+    "luts": [
+      "vlogup-pop-bright"
+    ],
+    "sfx": [
+      "confetti-pop",
+      "sparkle",
+      "whoosh-short"
+    ],
+    "fonts": [
+      "Pacifico",
+      "Fredoka"
+    ],
+    "musicTags": [
+      "party",
+      "pop"
+    ]
+  },
+  "preview": {
+    "thumbnail": "previews/birthday-party.webp",
+    "demo": "previews/birthday-party.mp4"
+  }
+}

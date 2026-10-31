@@ -1,0 +1,229 @@
+{
+  "$schema": "./template.schema.json",
+  "schemaVersion": "1.0",
+  "author": "VlogUp contributors",
+  "license": "MIT",
+  "origin": "builtin",
+  "id": "minimal-clean",
+  "name": "Minimal Clean",
+  "category": "minimal",
+  "description": "Simple and modern: natural colour, straight cuts, generous negative space, small clean captions, almost no effects.",
+  "tags": [
+    "minimal",
+    "clean",
+    "modern",
+    "simple"
+  ],
+  "inspiredBy": "Minimal, typography-led product-ad-style vlogs: restraint and natural colour.",
+  "stylePrompt": "Keep it minimal and clean. Straight cuts only on natural pauses or musical phrases, natural true-to-life colour with gentle correction, no transitions apart from a rare short crossfade. Captions in a small clean sans-serif, sentence case, no highlights or emoji. One understated title at the start. Quiet, modern music. Let the footage breathe.",
+  "aiHints": [
+    "Choose the cleanest, best-composed shots",
+    "Prefer fewer, longer shots over many short ones"
+  ],
+  "format": {
+    "aspect": "16:9",
+    "alsoExport": [
+      "9:16"
+    ],
+    "duration": {
+      "mode": "fit-footage",
+      "minSec": 15,
+      "maxSec": 900
+    }
+  },
+  "footage": {
+    "kind": "mixed",
+    "minClips": 2,
+    "idealClips": 12,
+    "photos": "allowed",
+    "reuse": "never",
+    "orderPolicy": "user-order"
+  },
+  "music": {
+    "source": "user-or-library",
+    "mood": [
+      "ambient",
+      "chill"
+    ],
+    "bpmRange": [
+      70,
+      110
+    ],
+    "energyCurve": "steady",
+    "startAt": "track-start",
+    "fadeInSec": 1.5,
+    "fadeOutSec": 3,
+    "volumeDb": -18,
+    "duckUnderSpeechDb": -12,
+    "endOnPhrase": true
+  },
+  "rhythm": {
+    "cutOn": "phrase",
+    "beatsPerCut": [
+      4,
+      8
+    ],
+    "minShotSec": 1.5,
+    "maxShotSec": 8,
+    "patternInterruptSec": null,
+    "jumpCuts": false,
+    "removeSilences": "normal",
+    "removeFillers": true,
+    "removeBadTakes": true,
+    "jlCutMs": 400,
+    "snapToleranceMs": 150
+  },
+  "structure": [
+    {
+      "id": "intro",
+      "role": "intro",
+      "length": {
+        "sec": 3,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "establishing-wide",
+          "motion-low"
+        ],
+        "count": 1
+      }
+    },
+    {
+      "id": "body",
+      "role": "body",
+      "length": {
+        "rest": true
+      },
+      "slots": {
+        "pick": [
+          "any"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      }
+    }
+  ],
+  "transitions": {
+    "default": {
+      "type": "cut"
+    },
+    "palette": [
+      {
+        "type": "cut",
+        "weight": 0.9
+      },
+      {
+        "type": "crossfade",
+        "durationSec": 0.4,
+        "weight": 0.1
+      }
+    ],
+    "maxPer10s": 1
+  },
+  "color": {
+    "autoCorrect": true,
+    "matchShots": true,
+    "lut": {
+      "id": "vlogup-neutral",
+      "strength": 0.4
+    },
+    "adjust": {
+      "contrast": 0.05
+    }
+  },
+  "motion": {
+    "reframe": "center",
+    "kenBurns": {
+      "on": false
+    },
+    "punchIn": {
+      "on": false
+    },
+    "speedRamps": [],
+    "shake": {
+      "on": false
+    }
+  },
+  "captions": {
+    "mode": "speech",
+    "style": "clean",
+    "font": {
+      "family": "Inter",
+      "weight": 500,
+      "sizePct": 3.5
+    },
+    "case": "sentence",
+    "wordsPerCard": 6,
+    "position": "lower-third",
+    "faceSafe": true,
+    "textColor": "#FFFFFF",
+    "emoji": "off",
+    "animation": "fade"
+  },
+  "textOverlays": [
+    {
+      "role": "title",
+      "at": "section:intro",
+      "textSource": "ai",
+      "maxChars": 24,
+      "font": {
+        "family": "Inter",
+        "weight": 600,
+        "sizePct": 5
+      },
+      "color": "#FFFFFF",
+      "position": "center",
+      "animation": "fade",
+      "durationSec": 2.5,
+      "background": "none"
+    }
+  ],
+  "sfx": {
+    "density": "none",
+    "cues": []
+  },
+  "audio": {
+    "originalAudio": "keep",
+    "voiceClean": "normal",
+    "voiceEQ": "natural",
+    "loudnessLUFS": -14,
+    "truePeakDb": -1
+  },
+  "intro": {
+    "type": "title-card",
+    "durationSec": 2.5,
+    "textSource": "ai"
+  },
+  "outro": {
+    "type": "fade-black",
+    "durationSec": 1.5
+  },
+  "constraints": {
+    "maxEffectsPer10s": 1,
+    "minClipQuality": "no-blur-no-dark",
+    "avoid": [
+      "emoji",
+      "whoosh",
+      "glitch",
+      "zoom transitions",
+      "upper-case captions"
+    ]
+  },
+  "assets": {
+    "luts": [
+      "vlogup-neutral"
+    ],
+    "sfx": [],
+    "fonts": [
+      "Inter"
+    ],
+    "musicTags": [
+      "ambient"
+    ]
+  },
+  "preview": {
+    "thumbnail": "previews/minimal-clean.webp",
+    "demo": "previews/minimal-clean.mp4"
+  }
+}

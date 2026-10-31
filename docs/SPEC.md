@@ -1,4 +1,4 @@
-# VlogUp — Design Spec v0.2 (design only, no code yet)
+# VlogUp — Design Spec v0.3 (design only, no code yet)
 
 - Panel: PM · Mobile UI/UX · Video engineer · AI engineer · Vlogger (end user)
 - Research date: 2026-10-31
@@ -7,8 +7,13 @@
   - prior-art review;
   - recommended base;
   - revised MVP, architecture and milestones.
+- v0.3 adds:
+  - **Templates** (edit recipes, gallery, save-as-template, match a reference);
+  - the bundled-asset licence plan;
+  - milestones updated.
+- Template files: `templates/` (`SCHEMA.md`, `template.schema.json`, 16 starter templates, `ASSETS.md`).
 
-## A) Debate summary (v0.1 + v0.2 round)
+## A) Debate summary (v0.1–v0.3 rounds)
 
 1. **Scope (PM vs vlogger).**
    - Resolved: the AI does about 90% of the edit; manual trim, split and reorder always stay available.
@@ -63,6 +68,25 @@
       - each chat round sends compact summaries;
       - there is a visible cost meter;
       - quick chips run with zero LLM calls where possible (e.g. "Remove silences" is pure DSP).
+13. **Templates: copy vs re-create (v0.3).**
+    - The owner wants CapCut-style viral templates. The PM noted that CapCut, Envato and Mixkit templates and assets are proprietary or ban redistribution in tools and templates.
+    - Resolved:
+      - study *styles*;
+      - re-create them as our own MIT recipes;
+      - bundle only CC0, OFL and MIT assets, or our own procedurally generated LUTs, SFX and overlays.
+14. **Fixed slots vs adaptive recipes (v0.3).**
+    - The CapCut and Reels model uses fixed slots tied to one song ("requires 11 clips").
+    - The vlogger said: "I never have exactly 11 clips."
+    - Resolved:
+      - recipes are music- and clip-count-agnostic: sections are in beats and bars, and slot *rules* replace fixed slots;
+      - a deterministic template compiler fits any song and any footage;
+      - the LLM only judges picks and text.
+15. **Reference matching (v0.3).**
+    - The AI engineer wanted "paste a TikTok link". The PM objected: platform terms and CORS.
+    - Resolved:
+      - v1.1: upload a file only, analysed on device, extracting measurable parameters only;
+      - v2: deeper detection (transitions, ramps, SFX);
+      - no link downloading.
 
 ## B) Final decisions
 
@@ -73,7 +97,7 @@
 1. Open the installable app → **+ New Vlog**.
 2. Tap **+** → pick clips in order → drag to reorder.
 3. **Analyse** runs in the background (progress bar): proxies, transcript, silences, scenes, faces, audio energy, beats, loudness, colour stats.
-4. Pick a **style preset** (optional) and type a prompt, or tap chips.
+4. Tap a **template** from the gallery (the top 3 are auto-suggested from the footage), and/or type a prompt or tap chips. The template's style prompt appears in the chat as the plan, and you can edit it.
 5. The AI shows a one-line plan → applies tool calls → **Done**.
 6. The result auto-plays, with a **change list** and **hold to compare Before/After**.
 7. Give feedback in chat → only the affected segments change → repeat.
@@ -256,6 +280,7 @@ Tiers:
 | **Calm Aesthetic** | Long takes, crossfades, soft film LUT, small serif captions, quiet ducked lo-fi music |
 
 - Status: **v1** (4 presets). "My Style", learned from the user's corrections, comes in v2.
+- v0.3: these 4 presets are now **templates** in the gallery: `fast-daily`, `cinematic-travel`, `high-retention`, `calm-aesthetic`.
 
 #### Auto-QC pass before Done (v1)
 - Checks:
@@ -275,6 +300,103 @@ Tiers:
   - RNNoise instead of DeepFilterNet;
   - 540p proxies;
   - fewer shader passes.
+
+### Templates (v0.3)
+- **What it is:** tap a ready-made style (e.g. "Cinematic Travel"). VlogUp turns it into a full edit recipe and edits *your* clips that way: pacing, beat sync, transitions, LUT, captions, text animations, music mood, SFX, speed ramps, zooms, intro and outro.
+- **Template = edit recipe (JSON), not a timeline.**
+  - Music-agnostic and clip-count-agnostic.
+  - Schema: `templates/template.schema.json`; docs: `templates/SCHEMA.md`.
+- **Recipe blocks:**
+  - format and duration mode;
+  - footage needs;
+  - music (mood, BPM, energy curve, ducking);
+  - rhythm (cut grid, beats per cut);
+  - sections with slot rules (hook, intro, build, drop, payoff, CTA, outro);
+  - transitions palette;
+  - colour (LUT plus adjust plus overlays);
+  - motion (reframe, Ken Burns, punch-ins, speed ramps, shake);
+  - captions;
+  - text overlays;
+  - SFX cues by event;
+  - audio chain;
+  - intro and outro;
+  - constraints;
+  - asset ids;
+  - `stylePrompt` plus `aiHints`.
+- **Template compiler** (deterministic):
+  1. analyse footage and music;
+  2. resolve section lengths on the real beat grid;
+  3. fill slots (the LLM ranks clips by ID);
+  4. emit typed tool calls;
+  5. snap and QC;
+  6. Done.
+  - Changing the template re-runs steps 2–6 and keeps manual locks.
+- **Prompt on top:** "Cinematic Travel but keep my voice and no letterbox" becomes JSON-patch overrides, shown as removable chips.
+- **Auto-suggest ("the AI recognises the style"):**
+  - top 3 templates from footage kind, content (food, night, nature, party, gym), clip count and photo ratio;
+  - heuristics plus one small LLM call.
+
+**16 starter templates** (MIT, original), in `templates/*.json`:
+
+| # | File | Name | Category | Aspect | Footage |
+|---|---|---|---|---|---|
+| 1 | fast-daily | Fast Daily | daily | 9:16 | talking + b-roll |
+| 2 | cinematic-travel | Cinematic Travel | travel | 16:9 | montage, letterbox |
+| 3 | high-retention | High-Retention YouTube | youtube | 16:9 | talking |
+| 4 | calm-aesthetic | Calm Aesthetic | aesthetic | 9:16 | slow mix |
+| 5 | food-vlog | Food Tour | food | 9:16 | close-ups + reactions |
+| 6 | day-in-my-life | Day in My Life | lifestyle | 9:16 | chronological, time stamps |
+| 7 | grwm | Get Ready With Me | beauty | 9:16 | talking, reveal |
+| 8 | fitness | Fitness / Workout | fitness | 9:16 | action, labels |
+| 9 | beat-sync-montage | Beat-Sync Montage | montage | 9:16 | music only |
+| 10 | retro-vhs | Retro VHS | retro | 9:16 | camcorder look |
+| 11 | minimal-clean | Minimal Clean | minimal | 16:9 | restraint |
+| 12 | birthday-party | Birthday & Party | party | 9:16 | photos + clips |
+| 13 | nature-escape | Nature Escape | nature | 16:9 | landscapes, ambience |
+| 14 | city-night | City Night | city | 9:16 | neon, hyperlapse |
+| 15 | photo-dump-recap | Photo Dump Recap | recap | 9:16 | many photos |
+| 16 | story-shorts | Storytime Short | youtube | 9:16 | talking, under 60 s, loops |
+
+- **Save my edit as template (v1, M4):**
+  - serialises the measured parameters of a finished edit (rhythm per section, transitions used, grade, caption and text styles, SFX cues, ramps, music mood and BPM);
+  - the LLM writes the name and style prompt;
+  - stored locally; export/import as `.vlogup-template.json`;
+  - feeds "My Style".
+- **Match a reference video:**
+  - **v1.1 (after the v1.0 launch, upload only, on device):**
+    - cut rhythm and alignment to the beat grid;
+    - pacing curve into sections;
+    - colour stats into a *generated* LUT plus adjust values;
+    - letterbox and aspect;
+    - caption and text look (via vision on sampled frames) mapped to our fonts;
+    - speech/music balance.
+  - **v2:** transition classification, speed-ramp, zoom and SFX-event detection, text animation style.
+  - **Never:** downloading from TikTok, YouTube or Instagram links; reusing any footage, music, fonts or graphics of the reference.
+- **Where the best templates live (research, study only):**
+  - CapCut's template library: the largest, e.g. "Cinematic Vlog" at 523.58K uses, needing 11 clips at 9:16; the BeatSync collection; "City vlog trend"; "Speedramp"; "Travel dump" at 120 clips;
+  - Instagram Reels templates: music plus locked clip timings;
+  - VN BeatsClips: slots built from beat points or from a reference video's cuts;
+  - Canva: design-led layouts, weaker beat cutting;
+  - Mojo: animated text and story templates;
+  - Envato/Motion Array and Mixkit: pro NLE/After Effects templates, with licences that ban redistribution.
+- **What makes them work (and our recipes encode it):**
+  - cuts locked to the beat, getting denser at the drop;
+  - one signature move (speed ramp on the drop, whip, flash);
+  - one coherent look (grade plus 1–2 fonts);
+  - a hook in the first 1–3 s;
+  - trending audio (the user brings their own);
+  - the right clip count for the song.
+- **Bundled assets:** see `templates/ASSETS.md`.
+  - Our own procedural LUTs (13), SFX (16) and overlays.
+  - gl-transitions (MIT, per-shader check).
+  - Google Fonts (OFL, 15 fonts).
+  - FreePD music (CC0).
+  - Kenney and Freesound sounds (CC0 only).
+  - Excluded:
+    - Mixkit, Sonniss and Pixabay (redistribution limits);
+    - LottieFiles (not OSI, has a no-competing-service clause);
+    - the YouTube Audio Library;
+    - all proprietary template stores.
 
 ### MVP v1 features (revised)
 - **Import:**
@@ -299,8 +421,15 @@ Tiers:
   - captions: animated, with keyword highlight and emoji;
   - titles, lower thirds, intro/outro;
   - story: hook, best moments, bad takes;
-  - 4 presets;
+  - 4 presets (now templates);
   - auto-QC.
+- **Templates:**
+  - gallery with 16 starter templates;
+  - auto-suggest top 3;
+  - template compiler;
+  - prompt overrides;
+  - save my edit as template;
+  - import/export of template files.
 - **Quick chips (DSP-only where possible, so free):**
   - Remove silences;
   - Cut bad takes;
@@ -310,14 +439,18 @@ Tiers:
   - Hook first 3s;
   - Make Short 9:16;
   - Apply look.
-- **Music:** bundled CC0 library or the user's own file (e.g. Suno); **SFX:** bundled CC0 pack.
+- **Music:** bundled CC0 library (FreePD picks) or the user's own file (e.g. Suno).
+- **SFX:** our own procedural CC0 pack (16 ids) plus Kenney CC0.
+- **Fonts:** 15 OFL Google Fonts.
+- **LUTs:** 13 VlogUp originals.
 - **Export:** 16:9 and 9:16 together, 720p/1080p MP4.
 - **Providers:** BYO key for Grok, Claude or ChatGPT; cost meter.
 - **App:** installable PWA with an install button on the first screen; English UI; offline after first load.
 
 ### v2 / later
-- Learned "My Style" and "save this edit as a style" (OpenStoryline-like).
-- Copy the rhythm and grade from a reference video (Cutboard-like).
+- Learned "My Style" (blending saved templates and corrections).
+- Match a reference video, full version: transitions, ramps, zooms, SFX events, text animation (the basic version is v1.1).
+- Community template gallery (GitHub PRs, licence CI); user-imported Lottie stickers.
 - Match cuts, AI-written custom motion graphics, stock b-roll (Pexels), dereverb, stem separation.
 - Draw or tap on the preview to target edits (ExpressEdit-like).
 - Variants: generate 2–3 alternative edits side by side (Mosaic-like).
@@ -329,7 +462,11 @@ Tiers:
 - An MCP endpoint so external agents can drive VlogUp.
 
 ### Screen layout (top to bottom)
-- **Top bar:** Back · project name · version ▾ · Style preset ▾ · **Export**.
+- **Top bar:** Back · project name · version ▾ · Template ▾ · **Export**.
+- **Template gallery** (opens from Template ▾ or after import):
+  - horizontal cards with an auto-playing preview;
+  - the "Suggested for your clips" row first;
+  - tap → the style prompt appears in the chat → **Apply**.
 - **Preview** (about 35% height, shrinks when the chat is expanded): tap to play/pause; hold for Before/After.
 - **Tool row** (scroll): Canvas · Audio · Voice FX · Music · SFX · Text · Captions · Transitions · Color · Motion · Speed · Split.
 - **Timeline:**
@@ -352,7 +489,7 @@ Tiers:
   - `placeBroll(topic | segmentIds)`;
   - `captions(style, highlightKeywords, emoji)`, `addTitle(template, text)`, `lowerThird()`, `intro()`, `outro()`;
   - `buildStory(hook, setup, payoff, cta)`, `shortenTo(seconds)`, `makeShort()`;
-  - `applyPreset(name)`, `explain()`, `runQC()`.
+  - `applyTemplate(id, overrides)`, `suggestTemplates()`, `saveAsTemplate(name)`, `explain()`, `runQC()`.
 - **Agent loop:**
   - plan → tool calls → deterministic snap and validation → auto-QC → Done;
   - on feedback: locate the segments → patch only those → new version.
@@ -372,6 +509,10 @@ Tiers:
   - **Audio:** Web Audio graph (EQ, compressor, ducking automation) plus OfflineAudioContext for the export mix; AudioWorklet wasm for DeepFilterNet/RNNoise; ebur128-wasm.
   - **Analysis workers:** Meyda (energy/onsets), realtime-bpm-analyzer (beats), MediaPipe tasks-vision (faces), transformers.js Whisper (words), scene diff, colour stats; results cached in IndexedDB.
 - **Data:** one versioned timeline JSON plus an append-only op log (Cutboard pattern), giving exact undo, crash recovery and diffs for the AI.
+- **Templates:**
+  - JSON recipes validated against `template.schema.json` (ajv);
+  - a template compiler module (beat-grid resolver, slot filler, cue scheduler);
+  - assets referenced by id from a bundled asset manifest with licence metadata.
 - **AI layer:**
   - provider adapters (xAI / Anthropic / OpenAI) mapping one internal tool schema;
   - zod validation;
@@ -421,7 +562,17 @@ Tiers:
 - **Key theft:** CSP, no third-party scripts, spend-limit advice.
 - **Licence contamination:**
   - a dependency allow-list in CI (license-checker);
-  - no copying from AGPL/GPL repos.
+  - no copying from AGPL/GPL repos;
+  - an **asset licence manifest** check in CI (every LUT, SFX, font and track needs CC0, OFL, MIT or Apache plus a source URL).
+- **Templates looking like copies of CapCut/creator templates:**
+  - original recipes with neutral names;
+  - no proprietary assets;
+  - `inspiredBy` describes genres only;
+  - reference matching extracts parameters only.
+- **Template overfit (a recipe needs more clips or a different song):**
+  - elastic sections (`flex`);
+  - a `reuse` policy;
+  - the compiler warns "add ~5 more clips for best results".
 - **Music and SFX copyright:**
   - only CC0 or royalty-free bundles, or the user's own files;
   - a licence card per asset.
@@ -433,18 +584,31 @@ Tiers:
   - **Demo:** 3 clips → trim → export a working MP4 on a phone.
 - **M2: Analysis plus pro audio and captions.**
   - Whisper words, silences, fillers, bad takes, energy, beats, faces, colour stats.
-  - Denoise, EQ/compression, −14 LUFS, ducking, SFX pack, animated captions with keyword highlight.
+  - Denoise, EQ/compression, −14 LUFS, ducking, animated captions with keyword highlight.
+  - **Asset bundle part 1:** procedural SFX pack (16), FreePD music picks, OFL fonts, licence manifest plus CI.
   - DSP chips with no AI.
   - **Demo:** one tap on "Clean voice + Remove silences + Bad takes + Captions" turns a noisy raw vlog into a clean, tight, captioned, loud-enough edit.
 - **M3: Pro visuals.**
-  - 6 shader transitions, auto colour plus shot match plus LUTs, Ken Burns, punch-ins, smart 9:16 reframe, speed ramps, titles, lower thirds, intro/outro, b-roll overlay track with J/L cuts.
+  - 6+ shader transitions (gl-transitions ports), auto colour plus shot match plus LUTs, Ken Burns, punch-ins, smart 9:16 reframe, speed ramps, titles, lower thirds, intro/outro, b-roll overlay track with J/L cuts.
+  - **Asset bundle part 2:** 13 procedural LUTs; grain, light-leak and VHS overlays; caption and text animation set.
   - **Demo:** a manually built "cinematic" edit with a grade, transitions and reframe, exported in both formats.
-- **M4: AI editor.**
-  - Provider keys (Grok, Claude, ChatGPT); typed tools; snapper; plan → Done → change list → Before/After; partial-fix loop; 4 style presets; story builder (hook, setup, payoff, CTA); auto-QC; cost meter.
-  - **Demo:** "Make a High-Retention 60-sec Short with a strong hook" → Done → "keep the coffee part, less zoom" → fixed → export.
+- **M4: AI editor plus template gallery.**
+  - Provider keys (Grok, Claude, ChatGPT); typed tools; snapper; plan → Done → change list → Before/After; partial-fix loop; story builder (hook, setup, payoff, CTA); auto-QC; cost meter.
+  - **Templates:**
+    - template compiler;
+    - gallery with all 16 starter templates and preview clips (rendered from CC0 demo footage);
+    - auto-suggest top 3;
+    - prompt overrides;
+    - save my edit as template;
+    - template file import/export.
+  - **Demo 1:** add 20 travel clips → tap "Cinematic Travel" → Done (beat-synced, graded, titled) → "keep my voice at the beach" → fixed → export.
+  - **Demo 2:** "Make a High-Retention 60-sec Short with a strong hook" → Done → "keep the coffee part, less zoom" → fixed → save as template "My Daily".
 - **M5: Polish and launch v1.0.**
   - Onboarding, performance auto-downgrade, README with before/after demos, optional proxy template, licence CI, public release.
   - **Demo:** a public repo plus a live PWA, with one real vlog edited end to end on a phone in under 10 minutes of user time.
+- **M6 (v1.1): Match a reference video, basic version.**
+  - Upload a reference → on-device analysis → draft template (rhythm, sections, generated LUT, caption look, audio balance) with confidence scores.
+  - **Demo:** upload a vlog you like → "Use this style" → your clips are edited with a similar rhythm and look → save the template.
 
 ## Research notes (2026-10-31)
 - Platform facts carried over from v0.1:
@@ -462,3 +626,18 @@ Tiers:
 - Mosaic: Launch HN (YC W25); a $3.8M seed.
 - Eddie: Filmora review ("robotic pacing", desktop only).
 - Kapwing, VEED, Captions.ai, Runway, Premiere AI, Recut and TimeBolt: summarised from general knowledge; not re-verified this session.
+- v0.3 template research:
+  - CapCut template pages: "Cinematic Vlog" (523.58K uses, 11 clips, 9:16), "The One | Travel Vlog" (28 clips, 16:9), the BeatSync collection;
+  - VN BeatsClips help (slots from beat points or a reference video's cuts);
+  - Instagram Reels template behaviour.
+- v0.3 licences checked:
+  - LottieFiles Simple License (and the SPDX decline, Feb 2026);
+  - Mixkit SFX licence;
+  - Pixabay licence;
+  - Sonniss GDC licence v2.0;
+  - Kenney CC0;
+  - FreePD CC0;
+  - incompetech CC BY 4.0;
+  - FreshLUTs CC0;
+  - gl-transitions MIT (repo plus 18 shader headers);
+  - Google Fonts OFL directory for 15 fonts.

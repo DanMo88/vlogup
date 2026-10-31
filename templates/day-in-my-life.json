@@ -1,0 +1,323 @@
+{
+  "$schema": "./template.schema.json",
+  "schemaVersion": "1.0",
+  "author": "VlogUp contributors",
+  "license": "MIT",
+  "origin": "builtin",
+  "id": "day-in-my-life",
+  "name": "Day in My Life",
+  "category": "lifestyle",
+  "description": "Morning-to-night story with time stamps, voice-over on b-roll, soft clean look and friendly captions.",
+  "tags": [
+    "ditl",
+    "routine",
+    "lifestyle",
+    "timestamps"
+  ],
+  "inspiredBy": "'Day in my life' / routine vlogs: chronological, time-stamped chapters, voice-over over b-roll, relaxed pacing.",
+  "stylePrompt": "Edit this as a 'day in my life' vlog in chronological order from morning to night. Start each part of the day with a small time-stamp label (7:00 AM, lunch, evening). Use my talking as voice-over on top of b-roll where possible (L-cuts), keep a relaxed but tight pace with no dead air, clean bright natural colour, friendly sentence-case captions with a soft highlight, and light acoustic/pop music ducked under my voice. End with a calm night shot and a short sign-off.",
+  "aiHints": [
+    "Use clip creation time to order the day",
+    "Chapter boundaries = large time gaps",
+    "Prefer voice-over on b-roll over long talking-head shots"
+  ],
+  "format": {
+    "aspect": "9:16",
+    "alsoExport": [
+      "16:9"
+    ],
+    "duration": {
+      "mode": "fit-footage",
+      "minSec": 30,
+      "maxSec": 900
+    }
+  },
+  "footage": {
+    "kind": "mixed",
+    "minClips": 6,
+    "idealClips": 25,
+    "photos": "allowed",
+    "reuse": "never",
+    "orderPolicy": "chronological"
+  },
+  "music": {
+    "source": "user-or-library",
+    "mood": [
+      "acoustic",
+      "pop",
+      "chill"
+    ],
+    "bpmRange": [
+      85,
+      115
+    ],
+    "energyCurve": "steady",
+    "startAt": "auto",
+    "fadeInSec": 1,
+    "fadeOutSec": 3,
+    "volumeDb": -15,
+    "duckUnderSpeechDb": -15,
+    "endOnPhrase": true
+  },
+  "rhythm": {
+    "cutOn": "beat",
+    "beatsPerCut": [
+      2,
+      4
+    ],
+    "minShotSec": 0.8,
+    "maxShotSec": 5,
+    "patternInterruptSec": 4,
+    "jumpCuts": true,
+    "removeSilences": "normal",
+    "removeFillers": true,
+    "removeBadTakes": true,
+    "jlCutMs": 500,
+    "snapToleranceMs": 120
+  },
+  "structure": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "length": {
+        "sec": 3,
+        "flex": 0.4
+      },
+      "slots": {
+        "pick": [
+          "best-moment"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      }
+    },
+    {
+      "id": "morning",
+      "role": "body",
+      "length": {
+        "fraction": 0.3,
+        "flex": 0.8
+      },
+      "slots": {
+        "pick": [
+          "any"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      }
+    },
+    {
+      "id": "day",
+      "role": "body",
+      "length": {
+        "fraction": 0.35,
+        "flex": 0.8
+      },
+      "slots": {
+        "pick": [
+          "any"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      }
+    },
+    {
+      "id": "evening",
+      "role": "payoff",
+      "length": {
+        "rest": true
+      },
+      "slots": {
+        "pick": [
+          "any"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      }
+    },
+    {
+      "id": "outro",
+      "role": "outro",
+      "length": {
+        "sec": 4,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "night-lights",
+          "face",
+          "motion-low"
+        ],
+        "count": 1,
+        "allowSpeech": true
+      }
+    }
+  ],
+  "transitions": {
+    "default": {
+      "type": "cut"
+    },
+    "palette": [
+      {
+        "type": "crossfade",
+        "durationSec": 0.5,
+        "weight": 0.4
+      },
+      {
+        "type": "slide",
+        "durationBeats": 0.5,
+        "weight": 0.3,
+        "direction": "left"
+      },
+      {
+        "type": "zoom-in",
+        "durationBeats": 0.5,
+        "weight": 0.3
+      }
+    ],
+    "onSectionChange": {
+      "type": "dip-white",
+      "durationSec": 0.6
+    },
+    "maxPer10s": 2
+  },
+  "color": {
+    "autoCorrect": true,
+    "matchShots": true,
+    "lut": {
+      "id": "vlogup-clean-bright",
+      "strength": 0.6
+    },
+    "adjust": {
+      "exposure": 0.05,
+      "saturation": 0.05,
+      "temperature": 0.04,
+      "shadows": 0.1
+    }
+  },
+  "motion": {
+    "reframe": "face",
+    "kenBurns": {
+      "on": true,
+      "scaleFrom": 1.0,
+      "scaleTo": 1.06,
+      "direction": "alternate"
+    },
+    "punchIn": {
+      "on": true,
+      "scale": 1.12,
+      "trigger": "emphasis",
+      "durationSec": 1.5,
+      "maxPer10s": 1,
+      "ease": "ease-in-out"
+    },
+    "speedRamps": [
+      {
+        "trigger": "action",
+        "curve": "hyperlapse",
+        "fromSpeed": 1,
+        "toSpeed": 6,
+        "durationBeats": 4,
+        "ease": "ease-in-out",
+        "probability": 0.25
+      }
+    ]
+  },
+  "captions": {
+    "mode": "speech",
+    "style": "clean",
+    "font": {
+      "family": "Poppins",
+      "weight": 600,
+      "sizePct": 4.5
+    },
+    "case": "sentence",
+    "wordsPerCard": 4,
+    "position": "auto",
+    "faceSafe": true,
+    "textColor": "#FFFFFF",
+    "strokeColor": "#00000099",
+    "highlight": {
+      "color": "#FFC8DD",
+      "keywords": "auto",
+      "scale": 1.05
+    },
+    "emoji": "sparse",
+    "animation": "slide-up"
+  },
+  "textOverlays": [
+    {
+      "role": "time-stamp",
+      "at": "every-section",
+      "textSource": "time",
+      "font": {
+        "family": "Space Grotesk",
+        "weight": 600,
+        "sizePct": 5
+      },
+      "color": "#FFFFFF",
+      "position": "upper-left",
+      "animation": "typewriter",
+      "durationSec": 2,
+      "background": "pill"
+    }
+  ],
+  "sfx": {
+    "density": "low",
+    "gainDb": -14,
+    "cues": [
+      {
+        "on": "text-in",
+        "sound": "click"
+      },
+      {
+        "on": "transition:slide",
+        "sound": "swoosh-soft"
+      }
+    ]
+  },
+  "audio": {
+    "originalAudio": "keep",
+    "voiceClean": "normal",
+    "voiceEQ": "natural",
+    "loudnessLUFS": -14,
+    "truePeakDb": -1
+  },
+  "intro": {
+    "type": "cold-open",
+    "durationSec": 3
+  },
+  "outro": {
+    "type": "fade-black",
+    "durationSec": 2
+  },
+  "constraints": {
+    "maxEffectsPer10s": 3,
+    "minClipQuality": "no-blur",
+    "avoid": [
+      "heavy glitch",
+      "aggressive zooms"
+    ]
+  },
+  "assets": {
+    "luts": [
+      "vlogup-clean-bright"
+    ],
+    "sfx": [
+      "click",
+      "swoosh-soft"
+    ],
+    "fonts": [
+      "Poppins",
+      "Space Grotesk"
+    ],
+    "musicTags": [
+      "acoustic",
+      "pop"
+    ]
+  },
+  "preview": {
+    "thumbnail": "previews/day-in-my-life.webp",
+    "demo": "previews/day-in-my-life.mp4"
+  }
+}

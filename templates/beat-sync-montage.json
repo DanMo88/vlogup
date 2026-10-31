@@ -1,0 +1,330 @@
+{
+  "$schema": "./template.schema.json",
+  "schemaVersion": "1.0",
+  "author": "VlogUp contributors",
+  "license": "MIT",
+  "origin": "builtin",
+  "id": "beat-sync-montage",
+  "name": "Beat-Sync Montage",
+  "category": "montage",
+  "description": "Pure music edit: every cut on the beat, faster on the drop, flash and zoom transitions, velocity ramps, no talking.",
+  "tags": [
+    "beat-sync",
+    "montage",
+    "music",
+    "trend",
+    "velocity"
+  ],
+  "inspiredBy": "The very popular 'beat sync' and 'velocity / speed-ramp' trend edits on short-video apps.",
+  "stylePrompt": "Make a pure beat-synced montage from my clips. No talking. Cut exactly on the beat: every 2 beats in the intro, every beat in the build, and half-beats with flashes and zooms on the drop. Use velocity speed ramps (fast-slow-fast) on action clips, a quick shake on big hits, and a punchy, contrasty colour. Start on the music's strongest section and end exactly on the last hit.",
+  "aiHints": [
+    "Choose clips whose peak-motion frame can land on a beat",
+    "Match motion direction across cuts for flow",
+    "Order clips along the music energy curve"
+  ],
+  "format": {
+    "aspect": "9:16",
+    "alsoExport": [
+      "16:9",
+      "1:1"
+    ],
+    "duration": {
+      "mode": "fit-music",
+      "minSec": 10,
+      "maxSec": 90
+    },
+    "fps": 30
+  },
+  "footage": {
+    "kind": "montage",
+    "minClips": 8,
+    "idealClips": 24,
+    "maxClips": 80,
+    "photos": "allowed",
+    "reuse": "if-short",
+    "orderPolicy": "energy-curve"
+  },
+  "music": {
+    "source": "user-or-library",
+    "mood": [
+      "electronic",
+      "hiphop",
+      "pop"
+    ],
+    "bpmRange": [
+      90,
+      150
+    ],
+    "energyCurve": "build-drop",
+    "startAt": "best-section",
+    "fadeInSec": 0,
+    "fadeOutSec": 0.3,
+    "volumeDb": -8,
+    "endOnPhrase": true
+  },
+  "rhythm": {
+    "cutOn": "beat",
+    "beatsPerCut": [
+      1,
+      2
+    ],
+    "minShotSec": 0.2,
+    "maxShotSec": 2.5,
+    "patternInterruptSec": null,
+    "jumpCuts": false,
+    "removeSilences": "off",
+    "removeFillers": false,
+    "removeBadTakes": false,
+    "jlCutMs": 0,
+    "snapToleranceMs": 20
+  },
+  "structure": [
+    {
+      "id": "intro",
+      "role": "intro",
+      "length": {
+        "bars": 2,
+        "flex": 0.3
+      },
+      "slots": {
+        "pick": [
+          "establishing-wide",
+          "scenic"
+        ],
+        "count": "auto",
+        "clipIn": "peak-motion"
+      },
+      "beatsPerCut": 2
+    },
+    {
+      "id": "build",
+      "role": "build",
+      "length": {
+        "bars": 4,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "motion-high",
+          "any"
+        ],
+        "count": "auto",
+        "clipIn": "peak-motion"
+      },
+      "beatsPerCut": 1
+    },
+    {
+      "id": "drop",
+      "role": "drop",
+      "length": {
+        "bars": 4,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "motion-high",
+          "action",
+          "transition-friendly"
+        ],
+        "count": "auto",
+        "clipIn": "peak-motion"
+      },
+      "beatsPerCut": 0.5,
+      "transitionIn": {
+        "type": "flash",
+        "durationSec": 0.08
+      }
+    },
+    {
+      "id": "outro",
+      "role": "outro",
+      "length": {
+        "bars": 1,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "best-moment"
+        ],
+        "count": 1
+      },
+      "beatsPerCut": 4
+    }
+  ],
+  "transitions": {
+    "default": {
+      "type": "cut"
+    },
+    "palette": [
+      {
+        "type": "flash",
+        "durationSec": 0.08,
+        "weight": 0.3,
+        "shader": "FlashFade"
+      },
+      {
+        "type": "zoom-in",
+        "durationBeats": 0.25,
+        "weight": 0.3,
+        "shader": "CrossZoom"
+      },
+      {
+        "type": "whip",
+        "durationBeats": 0.25,
+        "weight": 0.2,
+        "shader": "Directional"
+      },
+      {
+        "type": "spin",
+        "durationBeats": 0.5,
+        "weight": 0.1
+      },
+      {
+        "type": "glitch",
+        "durationBeats": 0.25,
+        "weight": 0.1,
+        "shader": "GlitchMemories"
+      }
+    ],
+    "onDrop": {
+      "type": "flash",
+      "durationSec": 0.1
+    },
+    "maxPer10s": 5
+  },
+  "color": {
+    "autoCorrect": true,
+    "matchShots": true,
+    "lut": {
+      "id": "vlogup-punch",
+      "strength": 0.8
+    },
+    "adjust": {
+      "contrast": 0.25,
+      "saturation": 0.15,
+      "sharpen": 0.3,
+      "vignette": 0.15
+    }
+  },
+  "motion": {
+    "reframe": "subject",
+    "kenBurns": {
+      "on": true,
+      "scaleFrom": 1.0,
+      "scaleTo": 1.12,
+      "direction": "random"
+    },
+    "punchIn": {
+      "on": true,
+      "scale": 1.15,
+      "trigger": "downbeat",
+      "durationSec": 0.3,
+      "maxPer10s": 6,
+      "ease": "expo-in-out"
+    },
+    "speedRamps": [
+      {
+        "trigger": "every:3-cuts",
+        "curve": "montage-ramp",
+        "fromSpeed": 3,
+        "toSpeed": 0.4,
+        "durationBeats": 2,
+        "ease": "expo-in-out",
+        "probability": 0.6
+      },
+      {
+        "trigger": "drop",
+        "curve": "bullet",
+        "fromSpeed": 1,
+        "toSpeed": 0.25,
+        "durationBeats": 1,
+        "ease": "expo-in-out"
+      }
+    ],
+    "shake": {
+      "on": true,
+      "trigger": "downbeat",
+      "intensity": 0.25
+    }
+  },
+  "captions": {
+    "mode": "none"
+  },
+  "textOverlays": [
+    {
+      "role": "title",
+      "at": "section:drop",
+      "textSource": "ai",
+      "maxChars": 12,
+      "font": {
+        "family": "Archivo Black",
+        "weight": 400,
+        "sizePct": 12
+      },
+      "color": "#FFFFFF",
+      "position": "center",
+      "animation": "scale-down",
+      "durationBeats": 2,
+      "background": "none"
+    }
+  ],
+  "sfx": {
+    "density": "low",
+    "gainDb": -12,
+    "cues": [
+      {
+        "on": "before-drop",
+        "sound": "riser",
+        "offsetMs": -1500
+      },
+      {
+        "on": "transition:whip",
+        "sound": "whoosh-short",
+        "probability": 0.5
+      }
+    ]
+  },
+  "audio": {
+    "originalAudio": "mute",
+    "voiceClean": "off",
+    "voiceEQ": "off",
+    "loudnessLUFS": -13,
+    "truePeakDb": -1
+  },
+  "intro": {
+    "type": "none"
+  },
+  "outro": {
+    "type": "loop-to-start",
+    "durationSec": 0.5
+  },
+  "constraints": {
+    "maxEffectsPer10s": 10,
+    "minClipQuality": "no-blur",
+    "avoid": [
+      "speech",
+      "captions",
+      "cuts off the beat"
+    ]
+  },
+  "assets": {
+    "luts": [
+      "vlogup-punch"
+    ],
+    "sfx": [
+      "riser",
+      "whoosh-short"
+    ],
+    "fonts": [
+      "Archivo Black"
+    ],
+    "musicTags": [
+      "electronic",
+      "hiphop"
+    ]
+  },
+  "preview": {
+    "thumbnail": "previews/beat-sync-montage.webp",
+    "demo": "previews/beat-sync-montage.mp4"
+  }
+}

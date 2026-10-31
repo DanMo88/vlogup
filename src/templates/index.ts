@@ -1,27 +1,28 @@
 /**
- * Templates (planned): a template is a ready-made "edit recipe" — pacing, transitions, grade,
- * captions, music and SFX — that the AI applies to the user's own clips.
+ * Templates: a template is a ready-made "edit recipe" (pacing, transitions, grade, captions,
+ * music, SFX and a style prompt) that the AI applies to the user's own clips.
+ * Source of truth: /templates/*.json (schema: /templates/template.schema.json, see SCHEMA.md).
  *
- * M1 only reserves the tab. Template JSON files are dropped into `public/templates/`
- * (with an `index.json` listing them); this loader shows whatever is there. Applying a
- * template arrives with the AI editor (M4) and writes ops with actor 'template'.
+ * M1 only lists them. Applying a template arrives with the AI editor (M4) and will write
+ * ops with actor 'template'.
  */
 export interface TemplateSummary {
   id: string;
   name: string;
   description?: string;
+  category?: string;
   tags?: string[];
-  [k: string]: unknown;
+  aspect?: string;
 }
 
+const files = import.meta.glob<Record<string, any>>('../../templates/*.json', { eager: true, import: 'default' });
+
 export async function loadTemplates(): Promise<TemplateSummary[]> {
-  try {
-    const r = await fetch(`${import.meta.env.BASE_URL}templates/index.json`, { cache: 'no-cache' });
-    if (!r.ok) return [];
-    const j = await r.json();
-    const list = Array.isArray(j) ? j : Array.isArray(j?.templates) ? j.templates : [];
-    return list.filter((t: any) => t && (t.id || t.name)).map((t: any) => ({ ...t, id: String(t.id ?? t.name), name: String(t.name ?? t.id) }));
-  } catch {
-    return [];
-  }
+  return Object.entries(files)
+    .filter(([path, t]) => !path.endsWith('.schema.json') && t && t.id && t.name)
+    .map(([, t]) => ({
+      id: String(t.id), name: String(t.name), description: t.description, category: t.category,
+      tags: Array.isArray(t.tags) ? t.tags : undefined, aspect: t.format?.aspect,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 }

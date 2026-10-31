@@ -1,0 +1,324 @@
+{
+  "$schema": "./template.schema.json",
+  "schemaVersion": "1.0",
+  "author": "VlogUp contributors",
+  "license": "MIT",
+  "origin": "builtin",
+  "id": "grwm",
+  "name": "Get Ready With Me",
+  "category": "beauty",
+  "description": "Talking GRWM: face-centred, product labels, jump cuts, sped-up application, soft glowy skin-friendly look, final-look reveal.",
+  "tags": [
+    "grwm",
+    "beauty",
+    "outfit",
+    "talking",
+    "reveal"
+  ],
+  "inspiredBy": "GRWM / beauty storytime videos: chatty voice, product close-ups with names, speed-ups on application, final look reveal.",
+  "stylePrompt": "Edit this as a 'get ready with me' video. Keep my chatting as the backbone with tight jump cuts. When I apply a product, speed that part up (2-4x) while my voice continues, and show a small label with the product name when I mention it. Insert product close-ups as b-roll. Soft, glowy, skin-friendly colour with protected skin tones. Clean captions with pink keyword highlights. Finish with a slow-motion final-look reveal with a sparkle sound.",
+  "aiHints": [
+    "Product names come from the transcript (brand + product)",
+    "Reveal = last mirror/face shot; hold 2-3 s at 0.7x",
+    "Never punch in tighter than 1.15 on faces"
+  ],
+  "format": {
+    "aspect": "9:16",
+    "alsoExport": [
+      "16:9"
+    ],
+    "duration": {
+      "mode": "fit-footage",
+      "minSec": 30,
+      "maxSec": 900
+    }
+  },
+  "footage": {
+    "kind": "talking",
+    "minClips": 1,
+    "idealClips": 8,
+    "photos": "avoid",
+    "reuse": "never",
+    "orderPolicy": "user-order"
+  },
+  "music": {
+    "source": "user-or-library",
+    "mood": [
+      "pop",
+      "chill",
+      "lofi"
+    ],
+    "bpmRange": [
+      85,
+      115
+    ],
+    "energyCurve": "steady",
+    "startAt": "auto",
+    "fadeInSec": 1,
+    "fadeOutSec": 2,
+    "volumeDb": -18,
+    "duckUnderSpeechDb": -18,
+    "endOnPhrase": false
+  },
+  "rhythm": {
+    "cutOn": "speech",
+    "minShotSec": 0.6,
+    "maxShotSec": 5,
+    "patternInterruptSec": 4,
+    "jumpCuts": true,
+    "removeSilences": "tight",
+    "removeFillers": true,
+    "removeBadTakes": true,
+    "jlCutMs": 200,
+    "snapToleranceMs": 100
+  },
+  "structure": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "length": {
+        "sec": 3,
+        "flex": 0.4
+      },
+      "slots": {
+        "pick": [
+          "best-moment",
+          "face"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      },
+      "note": "Flash of the final look + the most interesting line"
+    },
+    {
+      "id": "steps",
+      "role": "body",
+      "length": {
+        "rest": true
+      },
+      "slots": {
+        "pick": [
+          "face",
+          "talking",
+          "product",
+          "detail-closeup"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      }
+    },
+    {
+      "id": "reveal",
+      "role": "reveal",
+      "length": {
+        "sec": 4,
+        "flex": 0.4
+      },
+      "slots": {
+        "pick": [
+          "face"
+        ],
+        "count": 1,
+        "clipIn": "best-frame"
+      },
+      "speed": 0.7,
+      "transitionIn": {
+        "type": "flash",
+        "durationSec": 0.15
+      }
+    },
+    {
+      "id": "outro",
+      "role": "outro",
+      "length": {
+        "sec": 3,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "face"
+        ],
+        "count": 1,
+        "allowSpeech": true
+      }
+    }
+  ],
+  "transitions": {
+    "default": {
+      "type": "cut"
+    },
+    "palette": [
+      {
+        "type": "zoom-in",
+        "durationBeats": 0.5,
+        "weight": 0.5,
+        "shader": "SimpleZoom"
+      },
+      {
+        "type": "crossfade",
+        "durationSec": 0.3,
+        "weight": 0.5
+      }
+    ],
+    "maxPer10s": 2,
+    "avoidOnFaces": true
+  },
+  "color": {
+    "autoCorrect": true,
+    "matchShots": true,
+    "lut": {
+      "id": "vlogup-glow",
+      "strength": 0.6
+    },
+    "adjust": {
+      "exposure": 0.05,
+      "contrast": -0.05,
+      "highlights": -0.1,
+      "bloom": 0.15,
+      "temperature": 0.03
+    },
+    "skinProtect": true
+  },
+  "motion": {
+    "reframe": "face",
+    "punchIn": {
+      "on": true,
+      "scale": 1.12,
+      "trigger": "emphasis",
+      "durationSec": 1.2,
+      "maxPer10s": 2,
+      "ease": "ease-in-out"
+    },
+    "speedRamps": [
+      {
+        "trigger": "action",
+        "curve": "hyperlapse",
+        "fromSpeed": 1,
+        "toSpeed": 3,
+        "durationBeats": 8,
+        "ease": "linear",
+        "probability": 0.7
+      }
+    ]
+  },
+  "captions": {
+    "mode": "speech",
+    "style": "clean",
+    "font": {
+      "family": "Poppins",
+      "weight": 600,
+      "sizePct": 4.5
+    },
+    "case": "sentence",
+    "wordsPerCard": 4,
+    "position": "auto",
+    "faceSafe": true,
+    "textColor": "#FFFFFF",
+    "strokeColor": "#00000080",
+    "highlight": {
+      "color": "#FF7EB6",
+      "keywords": "auto",
+      "scale": 1.08
+    },
+    "emoji": "sparse",
+    "animation": "pop"
+  },
+  "textOverlays": [
+    {
+      "role": "list-item",
+      "at": "auto",
+      "textSource": "transcript-keyword",
+      "maxChars": 32,
+      "font": {
+        "family": "Poppins",
+        "weight": 600,
+        "sizePct": 3.5
+      },
+      "color": "#FFFFFF",
+      "position": "lower-left",
+      "animation": "slide-left",
+      "durationSec": 3,
+      "background": "pill"
+    },
+    {
+      "role": "title",
+      "at": "section:reveal",
+      "textSource": "fixed",
+      "fixedText": "final look",
+      "font": {
+        "family": "Caveat",
+        "weight": 700,
+        "sizePct": 8
+      },
+      "color": "#FFFFFF",
+      "position": "bottom",
+      "animation": "handwrite",
+      "durationSec": 2.5
+    }
+  ],
+  "sfx": {
+    "density": "low",
+    "gainDb": -14,
+    "cues": [
+      {
+        "on": "text-in",
+        "sound": "pop"
+      },
+      {
+        "on": "section:reveal",
+        "sound": "sparkle"
+      },
+      {
+        "on": "speed-ramp",
+        "sound": "swoosh-soft",
+        "probability": 0.5
+      }
+    ]
+  },
+  "audio": {
+    "originalAudio": "keep",
+    "voiceClean": "normal",
+    "voiceEQ": "warm",
+    "loudnessLUFS": -14,
+    "truePeakDb": -1
+  },
+  "intro": {
+    "type": "cold-open",
+    "durationSec": 3
+  },
+  "outro": {
+    "type": "freeze-frame",
+    "durationSec": 2
+  },
+  "constraints": {
+    "maxEffectsPer10s": 3,
+    "minClipQuality": "no-blur",
+    "avoid": [
+      "harsh contrast on skin",
+      "glitch",
+      "shake"
+    ]
+  },
+  "assets": {
+    "luts": [
+      "vlogup-glow"
+    ],
+    "sfx": [
+      "pop",
+      "sparkle",
+      "swoosh-soft"
+    ],
+    "fonts": [
+      "Poppins",
+      "Caveat"
+    ],
+    "musicTags": [
+      "pop",
+      "chill"
+    ]
+  },
+  "preview": {
+    "thumbnail": "previews/grwm.webp",
+    "demo": "previews/grwm.mp4"
+  }
+}

@@ -1,0 +1,347 @@
+{
+  "$schema": "./template.schema.json",
+  "schemaVersion": "1.0",
+  "author": "VlogUp contributors",
+  "license": "MIT",
+  "origin": "builtin",
+  "id": "high-retention",
+  "name": "High-Retention YouTube",
+  "category": "youtube",
+  "description": "Max-retention talking video: 3-second hook, change every 1.5-3 s, keyword captions with emoji, zooms and SFX everywhere.",
+  "tags": [
+    "youtube",
+    "retention",
+    "talking",
+    "shorts"
+  ],
+  "inspiredBy": "Big-YouTuber retention editing (MrBeast-style): instant hook, constant visual change, loud captions, sound design on every story beat.",
+  "stylePrompt": "Edit for maximum retention. Start with the single most surprising line or moment in the first 3 seconds, before any intro. Remove every pause, filler and weak sentence. Change the picture every 1.5-3 seconds: punch-ins, b-roll, text pops, zoom transitions. Big bold captions, 1-2 words at a time, with the important words in yellow and an occasional emoji. Add a whoosh or pop on every visual change, and a riser before each reveal. Keep the story structure hook, setup, payoff, call to action.",
+  "aiHints": [
+    "Rank sentences by salience + energy; the strongest goes first as the hook",
+    "Add an open loop after the hook",
+    "Re-hook every ~30 s with a teaser line or visual"
+  ],
+  "format": {
+    "aspect": "16:9",
+    "alsoExport": [
+      "9:16"
+    ],
+    "duration": {
+      "mode": "fit-footage",
+      "minSec": 30,
+      "maxSec": 1200
+    },
+    "fps": 30
+  },
+  "footage": {
+    "kind": "talking",
+    "minClips": 1,
+    "idealClips": 10,
+    "photos": "allowed",
+    "reuse": "never",
+    "orderPolicy": "story"
+  },
+  "music": {
+    "source": "user-or-library",
+    "mood": [
+      "upbeat",
+      "electronic",
+      "playful"
+    ],
+    "bpmRange": [
+      100,
+      140
+    ],
+    "energyCurve": "wave",
+    "startAt": "auto",
+    "fadeInSec": 0.2,
+    "fadeOutSec": 1,
+    "volumeDb": -18,
+    "duckUnderSpeechDb": -20,
+    "endOnPhrase": false
+  },
+  "rhythm": {
+    "cutOn": "speech",
+    "minShotSec": 0.3,
+    "maxShotSec": 3,
+    "patternInterruptSec": 2,
+    "jumpCuts": true,
+    "removeSilences": "tight",
+    "removeFillers": true,
+    "removeBadTakes": true,
+    "jlCutMs": 150,
+    "snapToleranceMs": 100
+  },
+  "structure": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "length": {
+        "sec": 3,
+        "flex": 0.3
+      },
+      "slots": {
+        "pick": [
+          "best-moment"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      },
+      "note": "Strongest line or visual; no logo, no greeting"
+    },
+    {
+      "id": "setup",
+      "role": "setup",
+      "length": {
+        "fraction": 0.15,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "talking",
+          "face"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      }
+    },
+    {
+      "id": "body",
+      "role": "body",
+      "length": {
+        "rest": true
+      },
+      "slots": {
+        "pick": [
+          "talking",
+          "action",
+          "detail-closeup",
+          "any"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      }
+    },
+    {
+      "id": "payoff",
+      "role": "payoff",
+      "length": {
+        "fraction": 0.12,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "best-moment"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      }
+    },
+    {
+      "id": "cta",
+      "role": "cta",
+      "length": {
+        "sec": 4,
+        "flex": 0.3
+      },
+      "slots": {
+        "pick": [
+          "face"
+        ],
+        "count": 1,
+        "allowSpeech": true
+      }
+    }
+  ],
+  "transitions": {
+    "default": {
+      "type": "cut"
+    },
+    "palette": [
+      {
+        "type": "zoom-in",
+        "durationBeats": 0.5,
+        "weight": 0.4,
+        "shader": "SimpleZoom"
+      },
+      {
+        "type": "whip",
+        "durationBeats": 0.5,
+        "weight": 0.3,
+        "shader": "Directional"
+      },
+      {
+        "type": "flash",
+        "durationSec": 0.1,
+        "weight": 0.3
+      }
+    ],
+    "maxPer10s": 3,
+    "avoidOnFaces": false
+  },
+  "color": {
+    "autoCorrect": true,
+    "matchShots": true,
+    "lut": {
+      "id": "vlogup-punch",
+      "strength": 0.7
+    },
+    "adjust": {
+      "contrast": 0.2,
+      "saturation": 0.2,
+      "vibrance": 0.15,
+      "sharpen": 0.3
+    }
+  },
+  "motion": {
+    "reframe": "face",
+    "punchIn": {
+      "on": true,
+      "scale": 1.25,
+      "trigger": "keyword",
+      "durationSec": 1,
+      "maxPer10s": 4,
+      "ease": "back-out"
+    },
+    "speedRamps": [],
+    "shake": {
+      "on": true,
+      "trigger": "punch-in",
+      "intensity": 0.2
+    }
+  },
+  "captions": {
+    "mode": "speech",
+    "style": "bold-pop",
+    "font": {
+      "family": "Anton",
+      "weight": 400,
+      "sizePct": 8
+    },
+    "case": "upper",
+    "wordsPerCard": 2,
+    "position": "center",
+    "faceSafe": true,
+    "textColor": "#FFFFFF",
+    "strokeColor": "#000000",
+    "highlight": {
+      "color": "#FFE600",
+      "keywords": "every-card",
+      "scale": 1.2
+    },
+    "emoji": "frequent",
+    "animation": "bounce"
+  },
+  "textOverlays": [
+    {
+      "role": "counter",
+      "at": "auto",
+      "textSource": "transcript-keyword",
+      "maxChars": 14,
+      "font": {
+        "family": "Anton",
+        "weight": 400,
+        "sizePct": 10
+      },
+      "color": "#FFE600",
+      "position": "top",
+      "animation": "pop",
+      "durationSec": 1.5,
+      "background": "none"
+    },
+    {
+      "role": "cta",
+      "at": "section:cta",
+      "textSource": "fixed",
+      "fixedText": "SUBSCRIBE",
+      "font": {
+        "family": "Anton",
+        "weight": 400,
+        "sizePct": 8
+      },
+      "color": "#FFFFFF",
+      "position": "bottom",
+      "animation": "bounce",
+      "durationSec": 3,
+      "background": "pill"
+    }
+  ],
+  "sfx": {
+    "density": "high",
+    "gainDb": -9,
+    "cues": [
+      {
+        "on": "transition:any",
+        "sound": "whoosh-short"
+      },
+      {
+        "on": "text-in",
+        "sound": "pop"
+      },
+      {
+        "on": "caption-keyword",
+        "sound": "click",
+        "gainDb": -18,
+        "probability": 0.4
+      },
+      {
+        "on": "punch-in",
+        "sound": "bass-hit",
+        "gainDb": -12
+      },
+      {
+        "on": "section:payoff",
+        "sound": "riser",
+        "offsetMs": -1500
+      }
+    ]
+  },
+  "audio": {
+    "originalAudio": "keep",
+    "voiceClean": "strong",
+    "voiceEQ": "broadcast",
+    "loudnessLUFS": -14,
+    "truePeakDb": -1
+  },
+  "intro": {
+    "type": "cold-open",
+    "durationSec": 3
+  },
+  "outro": {
+    "type": "end-card",
+    "durationSec": 5,
+    "textSource": "channel-name"
+  },
+  "constraints": {
+    "maxEffectsPer10s": 8,
+    "minClipQuality": "no-blur",
+    "avoid": [
+      "slow intros",
+      "logo at the start",
+      "silence longer than 0.3 s"
+    ]
+  },
+  "assets": {
+    "luts": [
+      "vlogup-punch"
+    ],
+    "sfx": [
+      "whoosh-short",
+      "pop",
+      "click",
+      "bass-hit",
+      "riser"
+    ],
+    "fonts": [
+      "Anton"
+    ],
+    "musicTags": [
+      "upbeat",
+      "playful"
+    ]
+  },
+  "preview": {
+    "thumbnail": "previews/high-retention.webp",
+    "demo": "previews/high-retention.mp4"
+  }
+}

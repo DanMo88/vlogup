@@ -1,0 +1,342 @@
+{
+  "$schema": "./template.schema.json",
+  "schemaVersion": "1.0",
+  "author": "VlogUp contributors",
+  "license": "MIT",
+  "origin": "builtin",
+  "id": "fitness",
+  "name": "Fitness / Workout",
+  "category": "fitness",
+  "description": "High-energy workout edit: hard beat cuts, slow-mo on the hardest rep, exercise/set labels, gritty contrast, shake on drops.",
+  "tags": [
+    "gym",
+    "workout",
+    "sport",
+    "motivation"
+  ],
+  "inspiredBy": "Gym and workout vlogs / motivation edits: bass-heavy music, impact cuts, slow-mo peaks, exercise labels.",
+  "stylePrompt": "Edit my workout as a high-energy fitness vlog. Hard cuts on every beat, a slow-motion moment on the hardest rep of each exercise, and a camera shake on the music drop. Show the exercise name and sets x reps as bold labels when each exercise starts. Gritty, high-contrast, slightly desaturated look. Keep my coaching tips with captions; duck the music under my voice. End with a motivational line.",
+  "aiHints": [
+    "Detect exercises by repeated motion patterns + transcript names",
+    "Slow-mo = peak motion of the last rep",
+    "Use the strongest effort clip for the hook"
+  ],
+  "format": {
+    "aspect": "9:16",
+    "alsoExport": [
+      "16:9"
+    ],
+    "duration": {
+      "mode": "fit-music",
+      "minSec": 15,
+      "maxSec": 600
+    },
+    "fps": 30
+  },
+  "footage": {
+    "kind": "mixed",
+    "minClips": 4,
+    "idealClips": 16,
+    "photos": "avoid",
+    "reuse": "if-short",
+    "orderPolicy": "user-order"
+  },
+  "music": {
+    "source": "user-or-library",
+    "mood": [
+      "motivational",
+      "electronic",
+      "hiphop"
+    ],
+    "bpmRange": [
+      110,
+      150
+    ],
+    "energyCurve": "build-drop",
+    "startAt": "first-drop",
+    "fadeInSec": 0.2,
+    "fadeOutSec": 1.5,
+    "volumeDb": -11,
+    "duckUnderSpeechDb": -14,
+    "endOnPhrase": true
+  },
+  "rhythm": {
+    "cutOn": "beat",
+    "beatsPerCut": [
+      1,
+      2
+    ],
+    "minShotSec": 0.3,
+    "maxShotSec": 4,
+    "patternInterruptSec": 3,
+    "jumpCuts": true,
+    "removeSilences": "tight",
+    "removeFillers": true,
+    "removeBadTakes": true,
+    "jlCutMs": 200,
+    "snapToleranceMs": 50
+  },
+  "structure": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "length": {
+        "beats": 8,
+        "flex": 0.3
+      },
+      "slots": {
+        "pick": [
+          "motion-high",
+          "best-moment"
+        ],
+        "count": "auto"
+      },
+      "beatsPerCut": 1
+    },
+    {
+      "id": "body",
+      "role": "body",
+      "length": {
+        "rest": true
+      },
+      "slots": {
+        "pick": [
+          "action",
+          "motion-high",
+          "talking"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      }
+    },
+    {
+      "id": "drop",
+      "role": "drop",
+      "length": {
+        "bars": 4,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "motion-high",
+          "action"
+        ],
+        "count": "auto"
+      },
+      "beatsPerCut": 0.5
+    },
+    {
+      "id": "outro",
+      "role": "outro",
+      "length": {
+        "beats": 8,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "face",
+          "talking"
+        ],
+        "count": 1,
+        "allowSpeech": true
+      }
+    }
+  ],
+  "transitions": {
+    "default": {
+      "type": "cut"
+    },
+    "palette": [
+      {
+        "type": "flash",
+        "durationSec": 0.08,
+        "weight": 0.4,
+        "shader": "FlashFade"
+      },
+      {
+        "type": "zoom-in",
+        "durationBeats": 0.25,
+        "weight": 0.3,
+        "shader": "CrossZoom"
+      },
+      {
+        "type": "glitch",
+        "durationBeats": 0.25,
+        "weight": 0.3,
+        "shader": "GlitchDisplace"
+      }
+    ],
+    "onDrop": {
+      "type": "flash",
+      "durationSec": 0.1
+    },
+    "maxPer10s": 3
+  },
+  "color": {
+    "autoCorrect": true,
+    "matchShots": true,
+    "lut": {
+      "id": "vlogup-gritty",
+      "strength": 0.75
+    },
+    "adjust": {
+      "contrast": 0.3,
+      "saturation": -0.2,
+      "sharpen": 0.4,
+      "vignette": 0.3,
+      "grain": 0.1
+    }
+  },
+  "motion": {
+    "reframe": "subject",
+    "punchIn": {
+      "on": true,
+      "scale": 1.2,
+      "trigger": "downbeat",
+      "durationSec": 0.5,
+      "maxPer10s": 4,
+      "ease": "expo-in-out"
+    },
+    "speedRamps": [
+      {
+        "trigger": "action",
+        "curve": "bullet",
+        "fromSpeed": 1,
+        "toSpeed": 0.3,
+        "durationBeats": 2,
+        "ease": "expo-in-out",
+        "probability": 0.5
+      }
+    ],
+    "shake": {
+      "on": true,
+      "trigger": "drop",
+      "intensity": 0.35
+    }
+  },
+  "captions": {
+    "mode": "speech",
+    "style": "bold-pop",
+    "font": {
+      "family": "Oswald",
+      "weight": 700,
+      "sizePct": 6
+    },
+    "case": "upper",
+    "wordsPerCard": 2,
+    "position": "auto",
+    "faceSafe": true,
+    "textColor": "#FFFFFF",
+    "strokeColor": "#000000",
+    "highlight": {
+      "color": "#FF2D2D",
+      "keywords": "auto",
+      "scale": 1.15
+    },
+    "emoji": "sparse",
+    "animation": "pop"
+  },
+  "textOverlays": [
+    {
+      "role": "label",
+      "at": "auto",
+      "textSource": "transcript-keyword",
+      "maxChars": 22,
+      "font": {
+        "family": "Oswald",
+        "weight": 700,
+        "sizePct": 7
+      },
+      "color": "#FFFFFF",
+      "position": "top",
+      "animation": "slide-left",
+      "durationSec": 2.5,
+      "background": "box"
+    },
+    {
+      "role": "counter",
+      "at": "auto",
+      "textSource": "ai",
+      "maxChars": 10,
+      "font": {
+        "family": "Oswald",
+        "weight": 700,
+        "sizePct": 6
+      },
+      "color": "#FF2D2D",
+      "position": "upper-right",
+      "animation": "pop",
+      "durationSec": 2,
+      "background": "none"
+    }
+  ],
+  "sfx": {
+    "density": "medium",
+    "gainDb": -10,
+    "cues": [
+      {
+        "on": "drop",
+        "sound": "bass-hit"
+      },
+      {
+        "on": "text-in",
+        "sound": "impact-light"
+      },
+      {
+        "on": "speed-ramp",
+        "sound": "whoosh-long"
+      },
+      {
+        "on": "before-drop",
+        "sound": "riser",
+        "offsetMs": -2000
+      }
+    ]
+  },
+  "audio": {
+    "originalAudio": "duck",
+    "voiceClean": "strong",
+    "voiceEQ": "broadcast",
+    "loudnessLUFS": -13,
+    "truePeakDb": -1
+  },
+  "intro": {
+    "type": "hook-montage",
+    "durationSec": 3
+  },
+  "outro": {
+    "type": "end-card",
+    "durationSec": 3,
+    "textSource": "ai"
+  },
+  "constraints": {
+    "maxEffectsPer10s": 6,
+    "minClipQuality": "any",
+    "avoid": [
+      "crossfades",
+      "pastel grade"
+    ]
+  },
+  "assets": {
+    "luts": [
+      "vlogup-gritty"
+    ],
+    "sfx": [
+      "bass-hit",
+      "impact-light",
+      "whoosh-long",
+      "riser"
+    ],
+    "fonts": [
+      "Oswald"
+    ],
+    "musicTags": [
+      "motivational",
+      "electronic"
+    ]
+  },
+  "preview": {
+    "thumbnail": "previews/fitness.webp",
+    "demo": "previews/fitness.mp4"
+  }
+}

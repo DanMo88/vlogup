@@ -1,0 +1,304 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vlogup.app/schema/template-1.0.json",
+  "title": "VlogUp Edit Template (recipe) v1.0",
+  "description": "A music-agnostic, clip-count-agnostic edit recipe. Timings are expressed in beats, bars, sections or fractions so the recipe adapts to any song and any number of clips.",
+  "type": "object",
+  "required": ["schemaVersion", "id", "name", "description", "category", "license", "stylePrompt", "format", "footage", "music", "rhythm", "structure", "transitions", "color", "motion", "captions", "sfx", "audio"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {"type": "string"},
+    "schemaVersion": {"const": "1.0"},
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,48}$"},
+    "name": {"type": "string", "maxLength": 40},
+    "description": {"type": "string", "maxLength": 240},
+    "category": {"enum": ["daily", "travel", "youtube", "aesthetic", "food", "lifestyle", "beauty", "fitness", "montage", "retro", "minimal", "party", "nature", "city", "recap", "custom"]},
+    "tags": {"type": "array", "items": {"type": "string"}, "maxItems": 12},
+    "author": {"type": "string"},
+    "license": {"type": "string", "description": "Licence of the recipe itself, e.g. MIT or CC0-1.0"},
+    "origin": {"enum": ["builtin", "user-saved", "reference-match", "community"]},
+    "inspiredBy": {"type": "string", "description": "Generic style description only. Never a copy of a proprietary template."},
+    "preview": {"type": "object", "additionalProperties": false, "properties": {"thumbnail": {"type": "string"}, "demo": {"type": "string"}, "accent": {"$ref": "#/$defs/color"}}},
+    "stylePrompt": {"type": "string", "minLength": 40, "maxLength": 1200, "description": "Natural-language brief given to the AI editor. It must agree with the structured recipe; the structured recipe wins on conflicts."},
+    "aiHints": {"type": "array", "items": {"type": "string"}, "maxItems": 12, "description": "Selection and judgement rules for the AI, e.g. 'open on the most scenic wide shot'."},
+
+    "format": {
+      "type": "object", "additionalProperties": false, "required": ["aspect", "duration"],
+      "properties": {
+        "aspect": {"enum": ["9:16", "16:9", "1:1", "4:5"]},
+        "alsoExport": {"type": "array", "items": {"enum": ["9:16", "16:9", "1:1", "4:5"]}},
+        "duration": {
+          "type": "object", "additionalProperties": false, "required": ["mode"],
+          "properties": {
+            "mode": {"enum": ["fit-music", "fit-footage", "target"], "description": "fit-music: end on a musical phrase; fit-footage: keep all good material; target: aim for targetSec"},
+            "targetSec": {"type": "number", "minimum": 3, "maximum": 3600},
+            "minSec": {"type": "number", "minimum": 1},
+            "maxSec": {"type": "number", "minimum": 1}
+          }
+        },
+        "fps": {"enum": [24, 25, 30, 60]}
+      }
+    },
+
+    "footage": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "minClips", "idealClips"],
+      "properties": {
+        "kind": {"enum": ["montage", "talking", "mixed"], "description": "montage = mostly b-roll set to music; talking = A-roll speech led; mixed = both"},
+        "minClips": {"type": "integer", "minimum": 1},
+        "idealClips": {"type": "integer", "minimum": 1},
+        "maxClips": {"type": "integer", "minimum": 1},
+        "photos": {"enum": ["allowed", "preferred", "avoid"]},
+        "reuse": {"enum": ["never", "if-short", "allowed"], "description": "Whether a clip may be used more than once when footage is short"},
+        "orderPolicy": {"enum": ["user-order", "chronological", "story", "energy-curve"], "description": "How the AI orders clips"}
+      }
+    },
+
+    "music": {
+      "type": "object", "additionalProperties": false, "required": ["source", "mood", "bpmRange"],
+      "properties": {
+        "source": {"enum": ["user-or-library", "library", "user", "none"]},
+        "mood": {"type": "array", "items": {"enum": ["chill", "upbeat", "epic", "cinematic", "lofi", "acoustic", "electronic", "hiphop", "pop", "retro-synth", "ambient", "playful", "dramatic", "romantic", "motivational", "jazzy", "party"]}, "minItems": 1},
+        "bpmRange": {"type": "array", "items": {"type": "number", "minimum": 40, "maximum": 220}, "minItems": 2, "maxItems": 2},
+        "energyCurve": {"enum": ["steady", "build", "build-drop", "wave", "calm"]},
+        "startAt": {"enum": ["track-start", "first-drop", "best-section", "auto"]},
+        "fadeInSec": {"type": "number", "minimum": 0, "maximum": 10},
+        "fadeOutSec": {"type": "number", "minimum": 0, "maximum": 15},
+        "volumeDb": {"type": "number", "minimum": -40, "maximum": 0},
+        "duckUnderSpeechDb": {"type": "number", "minimum": -40, "maximum": 0},
+        "endOnPhrase": {"type": "boolean"}
+      }
+    },
+
+    "rhythm": {
+      "type": "object", "additionalProperties": false, "required": ["cutOn"],
+      "properties": {
+        "cutOn": {"enum": ["beat", "downbeat", "bar", "phrase", "speech", "free"]},
+        "beatsPerCut": {"$ref": "#/$defs/beatsPerCut"},
+        "minShotSec": {"type": "number", "minimum": 0.1},
+        "maxShotSec": {"type": "number", "minimum": 0.2},
+        "patternInterruptSec": {"type": ["number", "null"], "minimum": 1, "description": "Max seconds without a visual change on talking segments (null = off)"},
+        "jumpCuts": {"type": "boolean"},
+        "removeSilences": {"enum": ["off", "gentle", "normal", "tight"]},
+        "removeFillers": {"type": "boolean"},
+        "removeBadTakes": {"type": "boolean"},
+        "jlCutMs": {"type": "number", "minimum": 0, "maximum": 2000, "description": "Audio lead/lag for J/L cuts; 0 = off"},
+        "snapToleranceMs": {"type": "number", "minimum": 0, "maximum": 400}
+      }
+    },
+
+    "structure": {
+      "type": "array", "minItems": 1,
+      "description": "Ordered sections. Each section stretches or shrinks to fit the music and footage.",
+      "items": {"$ref": "#/$defs/section"}
+    },
+
+    "transitions": {
+      "type": "object", "additionalProperties": false, "required": ["default"],
+      "properties": {
+        "default": {"$ref": "#/$defs/transition"},
+        "palette": {"type": "array", "items": {"allOf": [{"$ref": "#/$defs/transition"}], "properties": {"weight": {"type": "number", "minimum": 0, "maximum": 1}}}},
+        "onSectionChange": {"$ref": "#/$defs/transition"},
+        "onDrop": {"$ref": "#/$defs/transition"},
+        "maxPer10s": {"type": "number", "minimum": 0, "maximum": 10},
+        "avoidOnFaces": {"type": "boolean"}
+      }
+    },
+
+    "color": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "autoCorrect": {"type": "boolean"},
+        "matchShots": {"type": "boolean"},
+        "lut": {"type": ["object", "null"], "additionalProperties": false, "properties": {"id": {"type": "string"}, "strength": {"$ref": "#/$defs/unit"}}, "required": ["id"]},
+        "adjust": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "exposure": {"$ref": "#/$defs/signed"}, "contrast": {"$ref": "#/$defs/signed"}, "saturation": {"$ref": "#/$defs/signed"},
+            "vibrance": {"$ref": "#/$defs/signed"}, "temperature": {"$ref": "#/$defs/signed"}, "tint": {"$ref": "#/$defs/signed"},
+            "highlights": {"$ref": "#/$defs/signed"}, "shadows": {"$ref": "#/$defs/signed"}, "fade": {"$ref": "#/$defs/unit"},
+            "sharpen": {"$ref": "#/$defs/unit"}, "vignette": {"$ref": "#/$defs/unit"}, "grain": {"$ref": "#/$defs/unit"},
+            "bloom": {"$ref": "#/$defs/unit"}, "chromaticAberration": {"$ref": "#/$defs/unit"}
+          }
+        },
+        "overlays": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["id"], "properties": {"id": {"type": "string"}, "opacity": {"$ref": "#/$defs/unit"}, "blend": {"enum": ["screen", "add", "overlay", "multiply", "normal"]}, "when": {"type": "string", "description": "'always', 'transitions', 'section:<id>' or 'random:<p>'"}}}},
+        "letterbox": {"type": ["number", "null"], "description": "Target aspect for cinematic bars, e.g. 2.39; null = off"},
+        "skinProtect": {"type": "boolean"}
+      }
+    },
+
+    "motion": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "reframe": {"enum": ["face", "subject", "center", "none"]},
+        "kenBurns": {"type": "object", "additionalProperties": false, "properties": {"on": {"type": "boolean"}, "scaleFrom": {"type": "number"}, "scaleTo": {"type": "number"}, "direction": {"enum": ["in", "out", "alternate", "random"]}}},
+        "punchIn": {"type": "object", "additionalProperties": false, "properties": {"on": {"type": "boolean"}, "scale": {"type": "number", "minimum": 1, "maximum": 2}, "trigger": {"enum": ["emphasis", "beat", "downbeat", "keyword", "interrupt"]}, "durationSec": {"type": "number"}, "maxPer10s": {"type": "number"}, "ease": {"$ref": "#/$defs/ease"}}},
+        "speedRamps": {"type": "array", "items": {"$ref": "#/$defs/speedRamp"}},
+        "shake": {"type": "object", "additionalProperties": false, "properties": {"on": {"type": "boolean"}, "trigger": {"enum": ["beat", "downbeat", "drop", "punch-in"]}, "intensity": {"$ref": "#/$defs/unit"}}},
+        "stabilize": {"type": "boolean", "description": "Hint only; requires native build (v2+)"}
+      }
+    },
+
+    "captions": {
+      "type": "object", "additionalProperties": false, "required": ["mode"],
+      "properties": {
+        "mode": {"enum": ["speech", "keywords-only", "none"]},
+        "style": {"enum": ["clean", "bold-pop", "karaoke", "boxed", "serif-subtle", "typewriter", "handwritten", "retro-pixel"]},
+        "font": {"$ref": "#/$defs/font"},
+        "case": {"enum": ["upper", "sentence", "lower", "as-spoken"]},
+        "wordsPerCard": {"type": "integer", "minimum": 1, "maximum": 12},
+        "position": {"enum": ["lower-third", "center", "upper-third", "auto"]},
+        "faceSafe": {"type": "boolean"},
+        "textColor": {"$ref": "#/$defs/color"},
+        "strokeColor": {"$ref": "#/$defs/color"},
+        "highlight": {"type": "object", "additionalProperties": false, "properties": {"color": {"$ref": "#/$defs/color"}, "keywords": {"enum": ["auto", "none", "every-card"]}, "scale": {"type": "number", "minimum": 1, "maximum": 2}}},
+        "emoji": {"enum": ["off", "sparse", "frequent"]},
+        "animation": {"enum": ["pop", "karaoke", "fade", "typewriter", "slide-up", "bounce", "none"]}
+      }
+    },
+
+    "textOverlays": {"type": "array", "items": {"$ref": "#/$defs/textOverlay"}},
+
+    "sfx": {
+      "type": "object", "additionalProperties": false, "required": ["density"],
+      "properties": {
+        "density": {"enum": ["none", "low", "medium", "high"]},
+        "gainDb": {"type": "number", "minimum": -40, "maximum": 0},
+        "cues": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["on", "sound"], "properties": {
+          "on": {"type": "string", "description": "Event: transition:<type>|transition:any|text-in|caption-keyword|punch-in|speed-ramp|before-drop|drop|section:<id>|intro|outro"},
+          "sound": {"type": "string", "description": "Bundled SFX id, e.g. whoosh-short"},
+          "gainDb": {"type": "number", "minimum": -40, "maximum": 6},
+          "offsetMs": {"type": "number", "minimum": -3000, "maximum": 3000},
+          "probability": {"$ref": "#/$defs/unit"}
+        }}}
+      }
+    },
+
+    "audio": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "originalAudio": {"enum": ["keep", "duck", "ambient-low", "mute"], "description": "What happens to the clips' own sound"},
+        "voiceClean": {"enum": ["off", "light", "normal", "strong"]},
+        "voiceEQ": {"enum": ["off", "natural", "warm", "bright", "broadcast"]},
+        "loudnessLUFS": {"type": "number", "minimum": -30, "maximum": -8},
+        "truePeakDb": {"type": "number", "minimum": -6, "maximum": 0}
+      }
+    },
+
+    "intro": {"$ref": "#/$defs/bookend"},
+    "outro": {"$ref": "#/$defs/bookend"},
+
+    "constraints": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "maxEffectsPer10s": {"type": "number"},
+        "minClipQuality": {"enum": ["any", "no-blur", "no-blur-no-dark"]},
+        "avoid": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+
+    "assets": {
+      "type": "object", "additionalProperties": false, "description": "All bundled asset ids this template references (for preloading and licence checks)",
+      "properties": {
+        "luts": {"type": "array", "items": {"type": "string"}},
+        "sfx": {"type": "array", "items": {"type": "string"}},
+        "fonts": {"type": "array", "items": {"type": "string"}},
+        "overlays": {"type": "array", "items": {"type": "string"}},
+        "musicTags": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  },
+
+  "$defs": {
+    "unit": {"type": "number", "minimum": 0, "maximum": 1},
+    "signed": {"type": "number", "minimum": -1, "maximum": 1},
+    "color": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$"},
+    "ease": {"enum": ["linear", "ease-in", "ease-out", "ease-in-out", "back-out", "elastic-out", "expo-in-out"]},
+    "font": {"type": "object", "additionalProperties": false, "required": ["family"], "properties": {"family": {"type": "string"}, "weight": {"type": "integer", "minimum": 100, "maximum": 900}, "italic": {"type": "boolean"}, "sizePct": {"type": "number", "minimum": 1, "maximum": 30, "description": "Font size as % of frame height"}}},
+    "beatsPerCut": {
+      "description": "Shot length in beats. A number, or a [min,max] range the AI picks within (varied rhythm).",
+      "oneOf": [{"type": "number", "minimum": 0.25, "maximum": 64}, {"type": "array", "items": {"type": "number", "minimum": 0.25, "maximum": 64}, "minItems": 2, "maxItems": 2}]
+    },
+    "length": {
+      "description": "Section length: exactly one unit.",
+      "type": "object", "additionalProperties": false, "minProperties": 1, "maxProperties": 2,
+      "properties": {
+        "beats": {"type": "number", "minimum": 1}, "bars": {"type": "number", "minimum": 0.5}, "sec": {"type": "number", "minimum": 0.3},
+        "fraction": {"type": "number", "minimum": 0.01, "maximum": 1}, "rest": {"const": true},
+        "flex": {"$ref": "#/$defs/unit", "description": "How much the section may stretch or shrink (0 rigid, 1 fully elastic)"}
+      }
+    },
+    "slotRule": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "pick": {"type": "array", "items": {"enum": ["best-moment", "establishing-wide", "detail-closeup", "face", "talking", "action", "motion-high", "motion-low", "scenic", "food", "people-group", "night-lights", "product", "transition-friendly", "golden-hour", "any"]}, "minItems": 1},
+        "count": {"oneOf": [{"const": "auto"}, {"type": "integer", "minimum": 1}]},
+        "clipIn": {"enum": ["auto", "peak-motion", "start", "speech-start", "best-frame"]},
+        "allowSpeech": {"type": "boolean"}
+      }
+    },
+    "transition": {
+      "type": "object", "required": ["type"],
+      "properties": {
+        "type": {"enum": ["cut", "crossfade", "dip-black", "dip-white", "flash", "whip", "zoom-in", "zoom-out", "spin", "glitch", "light-leak", "blur", "film-burn", "luma-wipe", "slide", "match-cut", "vhs-static", "shape-wipe"]},
+        "durationBeats": {"type": "number", "minimum": 0, "maximum": 8},
+        "durationSec": {"type": "number", "minimum": 0, "maximum": 3},
+        "direction": {"enum": ["auto", "left", "right", "up", "down", "in", "out"]},
+        "shader": {"type": "string", "description": "Implementation hint: gl-transitions name or VlogUp shader id"},
+        "weight": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "speedRamp": {
+      "type": "object", "additionalProperties": false, "required": ["trigger", "curve"],
+      "properties": {
+        "trigger": {"type": "string", "description": "drop|downbeat|section:<id>|action|clip-start|clip-end|every:<n>-cuts"},
+        "curve": {"enum": ["slowmo-hold", "ramp-in", "ramp-out", "bullet", "hyperlapse", "montage-ramp"]},
+        "fromSpeed": {"type": "number", "minimum": 0.1, "maximum": 16},
+        "toSpeed": {"type": "number", "minimum": 0.1, "maximum": 16},
+        "durationBeats": {"type": "number", "minimum": 0.25, "maximum": 32},
+        "ease": {"$ref": "#/$defs/ease"},
+        "probability": {"$ref": "#/$defs/unit"}
+      }
+    },
+    "section": {
+      "type": "object", "additionalProperties": false, "required": ["id", "role", "length"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "role": {"enum": ["hook", "intro", "setup", "body", "build", "drop", "payoff", "montage", "reveal", "cta", "outro"]},
+        "length": {"$ref": "#/$defs/length"},
+        "slots": {"$ref": "#/$defs/slotRule"},
+        "beatsPerCut": {"$ref": "#/$defs/beatsPerCut"},
+        "transitionIn": {"$ref": "#/$defs/transition"},
+        "speed": {"type": "number", "minimum": 0.1, "maximum": 16},
+        "musicGainDb": {"type": "number", "minimum": -40, "maximum": 6},
+        "note": {"type": "string", "maxLength": 200}
+      }
+    },
+    "textOverlay": {
+      "type": "object", "additionalProperties": false, "required": ["role", "at", "textSource", "animation"],
+      "properties": {
+        "role": {"enum": ["title", "subtitle", "location", "date", "time-stamp", "chapter", "label", "counter", "lower-third", "cta", "quote", "list-item"]},
+        "at": {"type": "string", "description": "start|end|section:<id>|beat:<n>|every-section|auto"},
+        "textSource": {"enum": ["ai", "user", "location", "date", "time", "fixed", "transcript-keyword"]},
+        "fixedText": {"type": "string"},
+        "maxChars": {"type": "integer", "minimum": 1, "maximum": 80},
+        "font": {"$ref": "#/$defs/font"},
+        "color": {"$ref": "#/$defs/color"},
+        "position": {"enum": ["center", "top", "bottom", "lower-left", "lower-right", "upper-left", "upper-right", "auto"]},
+        "animation": {"enum": ["fade", "pop", "slide-up", "slide-left", "typewriter", "letter-spread", "mask-reveal", "glitch", "bounce", "scale-down", "blur-in", "handwrite"]},
+        "durationBeats": {"type": "number", "minimum": 0.5, "maximum": 64},
+        "durationSec": {"type": "number", "minimum": 0.3, "maximum": 30},
+        "background": {"enum": ["none", "box", "pill", "blur", "underline"]}
+      }
+    },
+    "bookend": {
+      "type": "object", "additionalProperties": false, "required": ["type"],
+      "properties": {
+        "type": {"enum": ["none", "cold-open", "title-card", "hook-montage", "logo-sting", "end-card", "subscribe-card", "fade-black", "loop-to-start", "freeze-frame"]},
+        "durationSec": {"type": "number", "minimum": 0, "maximum": 15},
+        "textSource": {"enum": ["ai", "user", "fixed", "channel-name"]},
+        "fixedText": {"type": "string"},
+        "sfx": {"type": "string"}
+      }
+    }
+  }
+}

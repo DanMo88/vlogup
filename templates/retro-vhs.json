@@ -1,0 +1,321 @@
+{
+  "$schema": "./template.schema.json",
+  "schemaVersion": "1.0",
+  "author": "VlogUp contributors",
+  "license": "MIT",
+  "origin": "builtin",
+  "id": "retro-vhs",
+  "name": "Retro VHS",
+  "category": "retro",
+  "description": "Nostalgic camcorder tape: VHS colour bleed, scan lines, date stamp, tape glitches and rewind sounds.",
+  "tags": [
+    "retro",
+    "vhs",
+    "90s",
+    "nostalgia",
+    "camcorder"
+  ],
+  "inspiredBy": "The 90s camcorder / VHS 'home video' aesthetic trend.",
+  "stylePrompt": "Make my clips look like a 90s VHS home video. Washed-out, slightly green-magenta tape colour with chroma bleed, scan lines, light noise and soft focus. A 'PLAY' label and a camcorder date stamp in the corner in a pixel font. Transitions are tape glitches and static with tape sounds. Retro synth or lo-fi music. Captions in a simple monospace style. End with a tape-stop.",
+  "aiHints": [
+    "Handheld, candid clips fit best",
+    "Use glitch transitions only between scenes, not on every cut"
+  ],
+  "format": {
+    "aspect": "9:16",
+    "alsoExport": [
+      "16:9",
+      "4:5"
+    ],
+    "duration": {
+      "mode": "fit-music",
+      "minSec": 15,
+      "maxSec": 300
+    },
+    "fps": 30
+  },
+  "footage": {
+    "kind": "mixed",
+    "minClips": 4,
+    "idealClips": 14,
+    "photos": "allowed",
+    "reuse": "never",
+    "orderPolicy": "chronological"
+  },
+  "music": {
+    "source": "user-or-library",
+    "mood": [
+      "retro-synth",
+      "lofi"
+    ],
+    "bpmRange": [
+      80,
+      120
+    ],
+    "energyCurve": "steady",
+    "startAt": "auto",
+    "fadeInSec": 0.5,
+    "fadeOutSec": 1,
+    "volumeDb": -14,
+    "duckUnderSpeechDb": -14,
+    "endOnPhrase": false
+  },
+  "rhythm": {
+    "cutOn": "beat",
+    "beatsPerCut": [
+      2,
+      4
+    ],
+    "minShotSec": 0.8,
+    "maxShotSec": 5,
+    "patternInterruptSec": null,
+    "jumpCuts": true,
+    "removeSilences": "normal",
+    "removeFillers": true,
+    "removeBadTakes": true,
+    "jlCutMs": 0,
+    "snapToleranceMs": 150
+  },
+  "structure": [
+    {
+      "id": "intro",
+      "role": "intro",
+      "length": {
+        "sec": 2,
+        "flex": 0.3
+      },
+      "slots": {
+        "pick": [
+          "any"
+        ],
+        "count": 1
+      },
+      "transitionIn": {
+        "type": "vhs-static",
+        "durationSec": 0.6,
+        "shader": "TvStatic"
+      }
+    },
+    {
+      "id": "body",
+      "role": "body",
+      "length": {
+        "rest": true
+      },
+      "slots": {
+        "pick": [
+          "any"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      }
+    },
+    {
+      "id": "outro",
+      "role": "outro",
+      "length": {
+        "sec": 2,
+        "flex": 0.3
+      },
+      "slots": {
+        "pick": [
+          "any"
+        ],
+        "count": 1
+      }
+    }
+  ],
+  "transitions": {
+    "default": {
+      "type": "cut"
+    },
+    "palette": [
+      {
+        "type": "glitch",
+        "durationSec": 0.3,
+        "weight": 0.5,
+        "shader": "GlitchMemories"
+      },
+      {
+        "type": "vhs-static",
+        "durationSec": 0.4,
+        "weight": 0.3,
+        "shader": "TvStatic"
+      },
+      {
+        "type": "luma-wipe",
+        "durationSec": 0.4,
+        "weight": 0.2,
+        "shader": "StaticFade"
+      }
+    ],
+    "onSectionChange": {
+      "type": "vhs-static",
+      "durationSec": 0.5
+    },
+    "maxPer10s": 2
+  },
+  "color": {
+    "autoCorrect": true,
+    "matchShots": false,
+    "lut": {
+      "id": "vlogup-vhs",
+      "strength": 0.9
+    },
+    "adjust": {
+      "contrast": -0.1,
+      "saturation": -0.15,
+      "sharpen": 0,
+      "grain": 0.35,
+      "fade": 0.15,
+      "chromaticAberration": 0.5,
+      "vignette": 0.2
+    },
+    "overlays": [
+      {
+        "id": "vhs-scanlines",
+        "opacity": 0.35,
+        "blend": "overlay",
+        "when": "always"
+      },
+      {
+        "id": "vhs-tracking",
+        "opacity": 0.6,
+        "blend": "screen",
+        "when": "random:0.15"
+      }
+    ]
+  },
+  "motion": {
+    "reframe": "center",
+    "punchIn": {
+      "on": false
+    },
+    "speedRamps": [],
+    "shake": {
+      "on": true,
+      "trigger": "beat",
+      "intensity": 0.05
+    }
+  },
+  "captions": {
+    "mode": "speech",
+    "style": "retro-pixel",
+    "font": {
+      "family": "VT323",
+      "weight": 400,
+      "sizePct": 6
+    },
+    "case": "upper",
+    "wordsPerCard": 4,
+    "position": "lower-third",
+    "faceSafe": true,
+    "textColor": "#FFFFFF",
+    "emoji": "off",
+    "animation": "typewriter"
+  },
+  "textOverlays": [
+    {
+      "role": "label",
+      "at": "start",
+      "textSource": "fixed",
+      "fixedText": "PLAY ▶",
+      "font": {
+        "family": "VT323",
+        "weight": 400,
+        "sizePct": 6
+      },
+      "color": "#FFFFFF",
+      "position": "upper-left",
+      "animation": "fade",
+      "durationSec": 3
+    },
+    {
+      "role": "date",
+      "at": "every-section",
+      "textSource": "date",
+      "font": {
+        "family": "VT323",
+        "weight": 400,
+        "sizePct": 5
+      },
+      "color": "#FFB000",
+      "position": "lower-right",
+      "animation": "fade",
+      "durationSec": 30
+    }
+  ],
+  "sfx": {
+    "density": "medium",
+    "gainDb": -12,
+    "cues": [
+      {
+        "on": "transition:glitch",
+        "sound": "vhs-glitch"
+      },
+      {
+        "on": "transition:vhs-static",
+        "sound": "tape-static"
+      },
+      {
+        "on": "outro",
+        "sound": "tape-stop"
+      },
+      {
+        "on": "intro",
+        "sound": "tape-insert"
+      }
+    ]
+  },
+  "audio": {
+    "originalAudio": "keep",
+    "voiceClean": "light",
+    "voiceEQ": "natural",
+    "loudnessLUFS": -14,
+    "truePeakDb": -1
+  },
+  "intro": {
+    "type": "logo-sting",
+    "durationSec": 1.5,
+    "sfx": "tape-insert"
+  },
+  "outro": {
+    "type": "fade-black",
+    "durationSec": 1,
+    "sfx": "tape-stop"
+  },
+  "constraints": {
+    "maxEffectsPer10s": 4,
+    "minClipQuality": "any",
+    "avoid": [
+      "clean modern sans fonts",
+      "letterbox"
+    ]
+  },
+  "assets": {
+    "luts": [
+      "vlogup-vhs"
+    ],
+    "sfx": [
+      "vhs-glitch",
+      "tape-static",
+      "tape-stop",
+      "tape-insert"
+    ],
+    "fonts": [
+      "VT323"
+    ],
+    "overlays": [
+      "vhs-scanlines",
+      "vhs-tracking"
+    ],
+    "musicTags": [
+      "retro-synth",
+      "lofi"
+    ]
+  },
+  "preview": {
+    "thumbnail": "previews/retro-vhs.webp",
+    "demo": "previews/retro-vhs.mp4"
+  }
+}

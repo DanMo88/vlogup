@@ -1,0 +1,303 @@
+{
+  "$schema": "./template.schema.json",
+  "schemaVersion": "1.0",
+  "author": "VlogUp contributors",
+  "license": "MIT",
+  "origin": "builtin",
+  "id": "nature-escape",
+  "name": "Nature Escape",
+  "category": "nature",
+  "description": "Hiking/outdoors film: long scenic shots, natural ambience up front, earthy green grade, slow push-ins and gentle dissolves.",
+  "tags": [
+    "nature",
+    "hiking",
+    "outdoors",
+    "ambient"
+  ],
+  "inspiredBy": "Outdoor / hiking / camping cinematic vlogs: nature sound design, wide landscapes, earthy grade, reflective voice-over.",
+  "stylePrompt": "Edit this as a peaceful nature film. Let landscapes breathe with slow push-ins and long shots, and keep the natural sounds (wind, water, birds) clearly audible under soft ambient or acoustic music. Earthy, rich-green colour with soft highlights. Use gentle dissolves and occasional light leaks at sunrise/sunset. If I talk, use it as calm voice-over over landscapes. Small, elegant location labels. End on a wide sunset or summit shot.",
+  "aiHints": [
+    "Open with the widest, most impressive landscape",
+    "Follow a journey: trailhead, path, summit/view, rest",
+    "Let ambience come up between music phrases"
+  ],
+  "format": {
+    "aspect": "16:9",
+    "alsoExport": [
+      "9:16"
+    ],
+    "duration": {
+      "mode": "fit-music",
+      "minSec": 30,
+      "maxSec": 900
+    },
+    "fps": 24
+  },
+  "footage": {
+    "kind": "montage",
+    "minClips": 5,
+    "idealClips": 18,
+    "photos": "allowed",
+    "reuse": "never",
+    "orderPolicy": "story"
+  },
+  "music": {
+    "source": "user-or-library",
+    "mood": [
+      "ambient",
+      "acoustic",
+      "cinematic"
+    ],
+    "bpmRange": [
+      60,
+      100
+    ],
+    "energyCurve": "build",
+    "startAt": "track-start",
+    "fadeInSec": 3,
+    "fadeOutSec": 5,
+    "volumeDb": -16,
+    "duckUnderSpeechDb": -10,
+    "endOnPhrase": true
+  },
+  "rhythm": {
+    "cutOn": "bar",
+    "beatsPerCut": [
+      4,
+      8
+    ],
+    "minShotSec": 2.5,
+    "maxShotSec": 9,
+    "patternInterruptSec": null,
+    "jumpCuts": false,
+    "removeSilences": "gentle",
+    "removeFillers": true,
+    "removeBadTakes": true,
+    "jlCutMs": 900,
+    "snapToleranceMs": 200
+  },
+  "structure": [
+    {
+      "id": "intro",
+      "role": "intro",
+      "length": {
+        "bars": 4,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "establishing-wide",
+          "scenic"
+        ],
+        "count": "auto"
+      }
+    },
+    {
+      "id": "journey",
+      "role": "body",
+      "length": {
+        "rest": true
+      },
+      "slots": {
+        "pick": [
+          "scenic",
+          "detail-closeup",
+          "motion-low",
+          "talking"
+        ],
+        "count": "auto",
+        "allowSpeech": true
+      }
+    },
+    {
+      "id": "payoff",
+      "role": "payoff",
+      "length": {
+        "bars": 4,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "establishing-wide",
+          "golden-hour"
+        ],
+        "count": "auto"
+      },
+      "transitionIn": {
+        "type": "light-leak",
+        "durationSec": 1.2
+      }
+    },
+    {
+      "id": "outro",
+      "role": "outro",
+      "length": {
+        "bars": 2,
+        "flex": 0.5
+      },
+      "slots": {
+        "pick": [
+          "golden-hour",
+          "scenic"
+        ],
+        "count": 1
+      }
+    }
+  ],
+  "transitions": {
+    "default": {
+      "type": "crossfade",
+      "durationSec": 1,
+      "shader": "Fade"
+    },
+    "palette": [
+      {
+        "type": "crossfade",
+        "durationSec": 1,
+        "weight": 0.6
+      },
+      {
+        "type": "cut",
+        "weight": 0.3
+      },
+      {
+        "type": "light-leak",
+        "durationSec": 1.2,
+        "weight": 0.1
+      }
+    ],
+    "maxPer10s": 2
+  },
+  "color": {
+    "autoCorrect": true,
+    "matchShots": true,
+    "lut": {
+      "id": "vlogup-earthy-green",
+      "strength": 0.7
+    },
+    "adjust": {
+      "contrast": 0.1,
+      "vibrance": 0.15,
+      "highlights": -0.2,
+      "shadows": 0.1,
+      "grain": 0.08
+    },
+    "overlays": [
+      {
+        "id": "light-leak-warm",
+        "opacity": 0.35,
+        "blend": "screen",
+        "when": "section:payoff"
+      }
+    ],
+    "letterbox": null
+  },
+  "motion": {
+    "reframe": "subject",
+    "kenBurns": {
+      "on": true,
+      "scaleFrom": 1.0,
+      "scaleTo": 1.07,
+      "direction": "in"
+    },
+    "punchIn": {
+      "on": false
+    },
+    "speedRamps": [
+      {
+        "trigger": "action",
+        "curve": "hyperlapse",
+        "fromSpeed": 1,
+        "toSpeed": 8,
+        "durationBeats": 8,
+        "ease": "ease-in-out",
+        "probability": 0.2
+      }
+    ]
+  },
+  "captions": {
+    "mode": "speech",
+    "style": "serif-subtle",
+    "font": {
+      "family": "DM Serif Display",
+      "weight": 400,
+      "sizePct": 3.5
+    },
+    "case": "sentence",
+    "wordsPerCard": 7,
+    "position": "lower-third",
+    "faceSafe": true,
+    "textColor": "#FFFDF5",
+    "emoji": "off",
+    "animation": "fade"
+  },
+  "textOverlays": [
+    {
+      "role": "location",
+      "at": "every-section",
+      "textSource": "location",
+      "maxChars": 28,
+      "font": {
+        "family": "Inter",
+        "weight": 400,
+        "sizePct": 3
+      },
+      "color": "#FFFDF5",
+      "position": "lower-left",
+      "animation": "letter-spread",
+      "durationSec": 3.5,
+      "background": "none"
+    }
+  ],
+  "sfx": {
+    "density": "none",
+    "cues": []
+  },
+  "audio": {
+    "originalAudio": "ambient-low",
+    "voiceClean": "normal",
+    "voiceEQ": "warm",
+    "loudnessLUFS": -16,
+    "truePeakDb": -1.5
+  },
+  "intro": {
+    "type": "title-card",
+    "durationSec": 4,
+    "textSource": "ai"
+  },
+  "outro": {
+    "type": "fade-black",
+    "durationSec": 3
+  },
+  "constraints": {
+    "maxEffectsPer10s": 2,
+    "minClipQuality": "no-blur",
+    "avoid": [
+      "whoosh",
+      "glitch",
+      "fast cuts",
+      "emoji"
+    ]
+  },
+  "assets": {
+    "luts": [
+      "vlogup-earthy-green"
+    ],
+    "sfx": [],
+    "fonts": [
+      "DM Serif Display",
+      "Inter"
+    ],
+    "overlays": [
+      "light-leak-warm"
+    ],
+    "musicTags": [
+      "ambient",
+      "acoustic"
+    ]
+  },
+  "preview": {
+    "thumbnail": "previews/nature-escape.webp",
+    "demo": "previews/nature-escape.mp4"
+  }
+}
