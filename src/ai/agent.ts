@@ -47,7 +47,7 @@ function friendly(status: number, body: string, provider: ProviderId, model: str
   const label = providerInfo(provider).label;
   let detail = '';
   try { const j = JSON.parse(body); detail = j.error?.message ?? j.error ?? j.message ?? ''; if (typeof detail !== 'string') detail = JSON.stringify(detail); } catch { detail = body.slice(0, 200); }
-  if (status === 401 || status === 403) return new AiError(`${label} rejected the API key (${status}). Open ⚙︎ AI settings and paste a valid key.${detail ? ` Details: ${detail}` : ''}`, 'key');
+  if (status === 401 || status === 403 || (status === 400 && /api key|x-api-key|authentication|unauthori[sz]ed/i.test(detail))) return new AiError(`${label} rejected the API key (${status}). Open ⚙︎ AI settings and paste a valid key.${detail ? ` Details: ${detail}` : ''}`, 'key');
   if (status === 429) return new AiError(`${label} rate limit or out of credits (429). Wait a minute, or add credits / raise the limit in your ${label} console.${detail ? ` Details: ${detail}` : ''}`, 'rate');
   if (status === 404 || (status === 400 && /model/i.test(detail))) return new AiError(`${label} doesn't know the model "${model}". Change the model in ⚙︎ AI settings.${detail ? ` Details: ${detail}` : ''}`, 'model');
   if (status >= 500) return new AiError(`${label} server error (${status}). Try again in a moment.`, 'server');
