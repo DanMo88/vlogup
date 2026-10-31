@@ -23,6 +23,11 @@ export interface MediaAsset {
   width: number;
   height: number;
   hasAudio: boolean;
+  /** Video codec reported by the container (e.g. 'avc', 'hevc'). */
+  codec?: string;
+  /** Can WebCodecs decode this video on this device? (false → preview may work, export can't) */
+  decodable?: boolean;
+  audioDecodable?: boolean;
   /** Low-res proxy for smooth preview (540p), created in the background. */
   proxy?: { status: 'pending' | 'ready' | 'failed' | 'skipped'; height?: number };
   thumb?: string; // small data: URL JPEG

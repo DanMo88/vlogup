@@ -1,4 +1,5 @@
-import { useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
+import { VERSION_LABEL } from '../version';
 import { AiSettings, clearAiKeys, loadAi, maskKey, PROVIDERS, providerInfo, ProviderId, saveAi } from '../ai/settings';
 import { Dialog } from './Dialog';
 
@@ -11,16 +12,26 @@ export function ChatSheet() {
   const [ai, setAi] = useState<AiSettings>(loadAi());
   const [settings, setSettings] = useState(false);
   const [draft, setDraft] = useState('');
-  const [note, setNote] = useState<string | null>(null);
+  const [msgs, setMsgs] = useState<{ who: 'user' | 'bot'; text: string }[]>([]);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  useEffect(() => { const b = bodyRef.current; if (b) b.scrollTop = b.scrollHeight; }, [msgs, h]);
   const info = providerInfo(ai.provider);
   const hasKey = !!ai.keys[ai.provider];
   const cycle = () => setH(h === 'collapsed' ? 'half' : h === 'half' ? 'full' : 'collapsed');
 
-  const send = () => {
-    if (!draft.trim()) return;
-    setNote(`Saved idea: “${draft.trim()}”. The AI editor arrives in M4, so nothing was sent and no credits were used.`);
-    setDraft('');
+  // Never silent: every send shows the user's message and a clear reply.
+  const send = (text = draft) => {
+    const t = text.trim();
     if (h === 'collapsed') setH('half');
+    if (!t) {
+      setMsgs((m) => [...m, { who: 'bot', text: 'Type what you want, e.g. “make it fast and add a title”. AI editing arrives in the next update (M4).' }]);
+      return;
+    }
+    setDraft('');
+    setMsgs((m) => [...m, { who: 'user', text: t }, {
+      who: 'bot',
+      text: `AI editing arrives in the next update (M4), so I can't apply “${t.length > 60 ? t.slice(0, 60) + '…' : t}” yet. Nothing was sent and no credits were used. For now use the tools above: ＋ to add clips, Trim, Split, Order, Volume, Text, then Export.`,
+    }]);
   };
 
   return (
@@ -33,20 +44,20 @@ export function ChatSheet() {
         <button class="icon-btn sm" aria-label="AI settings" data-testid="ai-settings" onClick={() => setSettings(true)}>⚙︎</button>
       </div>
       {h !== 'collapsed' && (
-        <div class="chat-body">
+        <div class="chat-body" ref={bodyRef}>
           <div class="msg bot">
             👋 I'm your AI editor. <b>Coming in M4:</b> type how you want your vlog (“fast daily vlog, 60 s, strong hook”) and I'll cut,
             caption, grade and mix it on this timeline, then show <b>Done</b> with a change list you can undo.
             Bring your own Grok, Claude or ChatGPT key. Your footage never leaves the phone.
           </div>
-          {note && <div class="msg bot small">{note}</div>}
+          {msgs.map((m, i) => <div key={i} class={`msg ${m.who}`} data-testid={`msg-${m.who}`}>{m.text}</div>)}
         </div>
       )}
-      <div class="chips">{CHIPS.map((c) => <button class="chip" disabled title="Coming in M2/M4">{c}</button>)}</div>
+      <div class="chips">{CHIPS.map((c) => <button class="chip" type="button" onClick={() => send(c)}>{c}</button>)}</div>
       <form class="chat-input" onSubmit={(e) => { e.preventDefault(); send(); }}>
-        <input value={draft} placeholder="Describe your edit… (AI arrives in M4)" aria-label="Message the AI editor"
+        <input value={draft} data-testid="chat-input" enterkeyhint="send" placeholder="Describe your edit… (AI arrives in M4)" aria-label="Message the AI editor"
           onFocus={() => h === 'collapsed' && setH('half')} onInput={(e) => setDraft((e.target as HTMLInputElement).value)} />
-        <button class="btn primary sm" type="submit">Send</button>
+        <button class="btn primary sm" type="submit" data-testid="chat-send">Send</button>
       </form>
 
       {settings && <AiSettingsDialog ai={ai} onClose={() => setSettings(false)} onSave={(s) => { saveAi(s); setAi(s); }} />}
@@ -86,6 +97,7 @@ function AiSettingsDialog({ ai, onClose, onSave }: { ai: AiSettings; onClose: ()
           Get a key at <a href={p.keysUrl} target="_blank" rel="noopener">{p.keysUrl.replace('https://', '')}</a>. Keys are stored only in this browser
           (localStorage) and will be sent only to {p.vendor} when the AI editor ships in <b>M4</b>. Set a spend limit on your provider account.
         </p>
+        <p class="muted small" data-testid="app-version">VlogUp {VERSION_LABEL}</p>
         <div class="seg">
           <button class="btn primary" data-testid="ai-save" onClick={() => { onSave(s); onClose(); }}>Save</button>
           <button class="btn danger" onClick={() => { clearAiKeys(); onSave({ ...s, keys: {} }); onClose(); }}>Remove all keys</button>

@@ -12,7 +12,7 @@ interface Props {
   onSelectClip: (id: string | null) => void;
   onSelectText: (id: string | null) => void;
   onTrim: (clipId: string, inT: number, outT: number) => void;
-  onAdd: () => void;
+  fileId: string;
 }
 
 /** InShot-style timeline: fixed centre playhead, the tracks scroll underneath it. */
@@ -145,7 +145,7 @@ export function Timeline(props: Props) {
         </div>
       </div>
       <div class="tl-playhead" aria-hidden="true" />
-      <button class="tl-add" data-testid="add-clips" aria-label="Add clips" onClick={props.onAdd}>＋</button>
+      <label class="tl-add" for={props.fileId} data-testid="add-clips" aria-label="Add clips" >＋</label>
     </div>
   );
 }

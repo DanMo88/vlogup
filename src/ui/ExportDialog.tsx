@@ -28,7 +28,7 @@ export function ExportDialog({ project, onClose }: { project: Project; onClose: 
       setOut(r); setUrl(URL.createObjectURL(r.blob)); setState('done');
     } catch (e: any) {
       if (e?.name === 'AbortError') { setState('idle'); return; }
-      console.error(e, e?.stack);
+      console.warn('export failed', e);
       setErr(e?.message ?? String(e)); setState('error');
     } finally { wake?.release?.(); }
   };

@@ -8,7 +8,10 @@ import type { MediaAsset } from '../model/types';
 export const PROXY_HEIGHT = 540;
 
 export function needsProxy(a: MediaAsset): boolean {
-  return a.kind === 'video' && Math.min(a.width, a.height) > PROXY_HEIGHT + 60;
+  // Phones play 1080p H.264 natively, so only make proxies where they really help:
+  // >1080p (4K) or HEVC sources, and only when WebCodecs can actually decode them.
+  if (a.kind !== 'video' || a.decodable === false) return false;
+  return Math.min(a.width, a.height) > 1200 || a.codec === 'hevc';
 }
 
 export async function makeProxy(file: Blob, a: MediaAsset, onProgress?: (p: number) => void): Promise<Blob> {

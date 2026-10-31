@@ -5,6 +5,7 @@ import { deleteProject, listProjects, saveProject, requestPersistence } from '..
 import { detectCaps, Caps } from '../media/caps';
 import { install, isStandalone, onInstallChange, InstallHelp } from './install';
 import { Dialog } from './Dialog';
+import { VERSION_LABEL } from '../version';
 
 export function Home({ open }: { open: (id: string) => void }) {
   const [list, setList] = useState<Project[] | null>(null);
@@ -78,7 +79,7 @@ export function Home({ open }: { open: (id: string) => void }) {
       )}
 
       <footer class="home-foot muted small">
-        <p>Milestone M1 · core editor. AI editing (Grok, Claude, ChatGPT with your own key) arrives in M4.</p>
+        <p data-testid="home-version">VlogUp {VERSION_LABEL} · Milestone M1 · core editor. AI editing (Grok, Claude, ChatGPT with your own key) arrives in M4.</p>
         <p>
           Open source (MIT) · <a href="https://github.com/DanMo88/vlogup" target="_blank" rel="noopener">GitHub</a> · Your footage never leaves your device.
         </p>

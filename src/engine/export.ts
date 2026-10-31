@@ -28,6 +28,8 @@ export async function exportProject(p: Project, opts: ExportOptions): Promise<Ex
   const tl = p.timeline;
   const clips = tl.tracks.video;
   if (!clips.length) throw new Error('Add at least one clip first.');
+  const bad = [...new Set(clips.map((c) => p.media[c.mediaId]).filter((m) => m?.kind === 'video' && m.decodable === false).map((m) => `${m!.name} (${(m!.codec ?? 'unknown codec').toUpperCase()})`))];
+  if (bad.length) throw new Error(`This browser can't decode ${bad.join(', ')}, so it can't be exported. Delete that clip, or re-record in H.264 (Samsung: Camera ▸ Settings ▸ Advanced video options ▸ turn off “High efficiency videos”).`);
   const { w: W, h: H } = frameSize(tl.aspect, opts.shortSide);
   const fps = opts.fps;
   const total = clips.reduce((s, c) => s + clipLen(c), 0);

@@ -147,3 +147,17 @@ code { background: var(--bg3); padding: 1px 5px; border-radius: 5px; }
 .tpl-meta { color: var(--accent); text-transform: capitalize; }
 .tpl-list .btn { align-self: flex-start; margin-top: 4px; }
 .soon-badge { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; border: 0; font-size: 11px; padding: 3px 8px; }
+.file-input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; clip: rect(0 0 0 0); pointer-events: none; left: 0; top: 0; }
+label.empty-add, label.tl-add { cursor: pointer; display: flex; align-items: center; justify-content: center; user-select: none; -webkit-user-select: none; }
+label.empty-add { flex-direction: column; }
+.import-card { position: fixed; left: 50%; top: 30%; transform: translateX(-50%); z-index: 55; background: var(--bg2); border: 1px solid var(--line); border-radius: 16px; padding: 14px 18px; max-width: 88vw; display: flex; gap: 10px; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,.6); font-size: 14px; }
+.spinner { width: 18px; height: 18px; flex: none; border-radius: 50%; border: 3px solid #444; border-top-color: var(--accent); animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.report { list-style: none; padding: 0; display: grid; gap: 10px; }
+.report li { display: flex; flex-direction: column; gap: 4px; background: var(--bg3); border-radius: 12px; padding: 10px; }
+.banner { position: fixed; left: 8px; right: 8px; top: calc(8px + var(--safe-t)); z-index: 70; display: flex; gap: 10px; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 14px; font-size: 14px; box-shadow: 0 8px 24px rgba(0,0,0,.6); }
+.banner.update { background: #18233a; border: 1px solid #2f4a80; }
+.banner.error { background: #3a1820; border: 1px solid #80303f; top: auto; bottom: calc(8px + var(--safe-b)); }
+.banner-btns { display: flex; gap: 6px; flex: none; }
+.chat-body .msg.user { align-self: flex-end; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; }
+.dim { opacity: .45; }

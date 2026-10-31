@@ -4,7 +4,7 @@ import {
   clipLen, commit, DEFAULT_IMAGE_SECONDS, duration, exportProjectJson, fmtTime, locate, redoTarget, uid, undoTarget,
 } from '../model/timeline';
 import { getBlob, loadProject, mediaKey, proxyKey, putBlob, saveProject, storageBackend } from '../media/storage';
-import { probeFile } from '../media/probe';
+import { probeFile, withTimeout, codecName } from '../media/probe';
 import { makeProxy, needsProxy } from '../media/proxy';
 import { Player } from '../engine/player';
 import { Timeline } from './Timeline';
@@ -35,9 +35,13 @@ const TOOLS: { id: string; icon: string; label: string; soon?: string }[] = [
   { id: 'speed', icon: '⏩', label: 'Speed', soon: 'M3' },
 ];
 
+const HEVC_TIP = 'Tip: in Samsung Camera ▸ Settings ▸ Advanced video options turn off “High efficiency videos” (Pixel: Camera ▸ Settings ▸ Video ▸ turn off H.265/HEVC).';
+
 const val = (e: Event) => +(e.target as HTMLInputElement).value;
 
 const COLORS = ['#ffffff', '#ffd400', '#ff4d6d', '#4dd2ff', '#7cff6b', '#000000'];
+
+const FILE_ID = 'vlogup-file-input';
 
 export function Editor({ id, back }: { id: string; back: () => void }) {
   const [project, setProject] = useState<Project | null>(null);
@@ -49,6 +53,7 @@ export function Editor({ id, back }: { id: string; back: () => void }) {
   const [tool, setTool] = useState<Tool>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [importing, setImporting] = useState<string | null>(null);
+  const [report, setReport] = useState<{ name: string; msg: string; added: boolean }[] | null>(null);
   const [proxyMsg, setProxyMsg] = useState<string | null>(null);
   const [showExport, setShowExport] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
@@ -147,24 +152,34 @@ export function Editor({ id, back }: { id: string; back: () => void }) {
   }
 
   // ---------- import ----------
-  const onFiles = async (files: FileList | null) => {
+  const onFiles = async (input: HTMLInputElement) => {
     const p0 = projRef.current;
-    if (!files || !files.length || !p0) return;
-    const list = Array.from(files);
+    const list = Array.from(input.files ?? []);
+    input.value = ''; // allow picking the same file again
+    if (!p0) return;
+    if (!list.length) { flash('No files were selected'); return; }
     const assets: MediaAsset[] = [];
+    const problems: { name: string; msg: string; added: boolean }[] = [];
     for (let i = 0; i < list.length; i++) {
-      setImporting(`Importing ${i + 1}/${list.length} · ${list[i].name}`);
+      const f = list[i];
+      const label = `${i + 1}/${list.length} · ${f.name || 'file'}`;
+      setImporting(`Importing ${label}`);
       try {
-        const a = await probeFile(list[i]);
-        await putBlob(mediaKey(p0.id, a.id), list[i]);
+        const a = await probeFile(f, (step) => setImporting(`${step} · ${label}`));
+        setImporting(`Saving to this device${f.size ? ` (${(f.size / 1e6).toFixed(0)} MB)` : ''} · ${label}`);
+        await withTimeout(putBlob(mediaKey(p0.id, a.id), f), 10 * 60_000, 'Saving');
+        if (a.kind === 'video' && a.decodable === false) {
+          problems.push({ name: f.name, added: true, msg: `${codecName(a.codec)} video: this browser can't decode it, so it plays in the preview only if the phone supports it, and it can't be exported yet. ${HEVC_TIP}` });
+        }
         assets.push(a);
       } catch (e: any) {
-        flash(`Skipped ${list[i].name}: ${e?.message ?? 'unsupported file'}`);
+        console.error('import failed', f.name, e);
+        problems.push({ name: f.name || 'file', added: false, msg: e?.message ?? 'Unsupported file' });
       }
     }
     setImporting(null);
-    if (fileRef.current) fileRef.current.value = '';
-    if (!assets.length) return;
+    if (problems.length) setReport(problems);
+    if (!assets.length) { if (!problems.length) flash('Nothing was imported'); return; }
     const cur = projRef.current!;
     const media = { ...cur.media };
     assets.forEach((a) => (media[a.id] = a));
@@ -203,7 +218,7 @@ export function Editor({ id, back }: { id: string; back: () => void }) {
     if (!tl) return;
     if (tid === 'templates' || tid === 'canvas' || tid === 'order') { setTool(tool === tid ? null : (tid as Tool)); return; }
     if (tid === 'text') { addText(); return; }
-    if (!tl.tracks.video.length) { flash('Tap ＋ to add clips first'); return; }
+    if (!tl.tracks.video.length) { flash('Add a clip first: tap ＋'); return; }
     if (tid === 'split') {
       const loc = locate(tl, time);
       if (!loc) return;
@@ -282,10 +297,10 @@ export function Editor({ id, back }: { id: string; back: () => void }) {
         <button class="icon-btn" aria-label="Back" onClick={back}>‹</button>
         <input class="title-input" value={project.name} aria-label="Project name"
           onChange={(e) => update({ ...project, name: (e.target as HTMLInputElement).value || 'Untitled', updatedAt: new Date().toISOString() })} />
-        <button class="icon-btn" aria-label="Undo" disabled={!canUndo} onClick={undo}>↶</button>
-        <button class="icon-btn" aria-label="Redo" disabled={!canRedo} onClick={redo}>↷</button>
+        <button class={`icon-btn${canUndo ? '' : ' dim'}`} aria-label="Undo" onClick={() => (canUndo ? undo() : flash('Nothing to undo'))}>↶</button>
+        <button class={`icon-btn${canRedo ? '' : ' dim'}`} aria-label="Redo" onClick={() => (canRedo ? redo() : flash('Nothing to redo'))}>↷</button>
         <button class="icon-btn" aria-label="Project info" onClick={() => setShowInfo(true)}>ⓘ</button>
-        <button class="btn primary sm" data-testid="export" disabled={!tl.tracks.video.length} onClick={() => { player.current?.pause(); setShowExport(true); }}>Export</button>
+        <button class={`btn primary sm${tl.tracks.video.length ? '' : ' dim'}`} data-testid="export" onClick={() => { if (!tl.tracks.video.length) { flash('Add a clip first: tap ＋'); return; } player.current?.pause(); setShowExport(true); }}>Export</button>
       </header>
 
       <section class="preview" ref={hostRef}>
@@ -294,13 +309,13 @@ export function Editor({ id, back }: { id: string; back: () => void }) {
           onPointerMove={(e) => previewPointer(e as PointerEvent, 'move')}
           onPointerUp={(e) => previewPointer(e as PointerEvent, 'up')} />
         {!tl.tracks.video.length && (
-          <button class="empty-add" onClick={() => fileRef.current?.click()}>
+          <label class="empty-add" for={FILE_ID} data-testid="empty-add" >
             <span class="plus">＋</span><span>Add clips & photos in order</span>
-          </button>
+          </label>
         )}
         <div class="preview-bar">
           <button class="play" aria-label={playing ? 'Pause' : 'Play'} data-testid="play" onClick={() => player.current?.toggle()}>{playing ? '❚❚' : '▶'}</button>
-          {(importing || proxyMsg) && <span class="chip-status">{importing ?? proxyMsg}</span>}
+          {proxyMsg && !importing && <span class="chip-status">{proxyMsg}</span>}
         </div>
       </section>
 
@@ -317,10 +332,14 @@ export function Editor({ id, back }: { id: string; back: () => void }) {
         onSelectClip={(cid) => { setSelClip(cid); setSelText(null); if (!cid && (tool === 'trim' || tool === 'volume')) setTool(null); }}
         onSelectText={(tid) => { setSelText(tid); setSelClip(null); setTool(tid ? 'text' : null); }}
         onTrim={(cid, i, o) => dispatch({ type: 'trimClip', clipId: cid, in: i, out: o })}
-        onAdd={() => fileRef.current?.click()} />
+        fileId={FILE_ID} />
 
-      <input ref={fileRef} type="file" accept="video/*,image/*" multiple hidden data-testid="file-input"
-        onChange={(e) => onFiles((e.target as HTMLInputElement).files)} />
+      {/* Visually hidden (not display:none) and opened via <label for>: the most reliable way to open the Android/iOS picker. */}
+      <input ref={fileRef} id={FILE_ID} class="file-input" type="file" accept="video/*,image/*" multiple data-testid="file-input"
+        onChange={(e) => onFiles(e.currentTarget as HTMLInputElement)} />
+      {importing && (
+        <div class="import-card" role="status" data-testid="importing"><span class="spinner" /> {importing}</div>
+      )}
 
       {tool ? (
         <section class="panel" aria-label="Tool panel">
@@ -346,7 +365,13 @@ export function Editor({ id, back }: { id: string; back: () => void }) {
         <ChatSheet />
       )}
 
-      {toast && <div class="toast" role="status">{toast}</div>}
+      {toast && <div class="toast" role="status" data-testid="toast">{toast}</div>}
+      {report && (
+        <Dialog title="Import report" onClose={() => setReport(null)}>
+          <ul class="report" data-testid="import-report">{report.map((r) => <li><b>{r.added ? '⚠️' : '❌'} {r.name}</b><span class="small">{r.added ? 'Added with a warning. ' : 'Not added. '}{r.msg}</span></li>)}</ul>
+          <button class="btn primary" onClick={() => setReport(null)}>OK</button>
+        </Dialog>
+      )}
       {showExport && <ExportDialog project={project} onClose={() => setShowExport(false)} />}
       {showInfo && (
         <Dialog title="Project" onClose={() => setShowInfo(false)}>

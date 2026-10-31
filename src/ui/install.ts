@@ -43,9 +43,24 @@ export async function install(): Promise<InstallHelp> {
   return { title: 'Install on desktop', steps: ['Click the install icon ⊕ in the address bar,', 'or open the ⋮ menu → “Install VlogUp” / “Cast, save and share → Install page as app”.'] };
 }
 
+/** Fires when a newer deployed version has taken control (or is waiting). */
+const updateListeners = new Set<() => void>();
+export let updateReady = false;
+export const onUpdateReady = (f: () => void) => { updateListeners.add(f); return () => updateListeners.delete(f); };
+const markUpdate = () => { updateReady = true; updateListeners.forEach((f) => f()); };
+
 export function registerSW() {
   if (!('serviceWorker' in navigator) || import.meta.env.DEV) return;
+  const hadController = !!navigator.serviceWorker.controller;
+  // New SW calls skipWaiting + clients.claim → controllerchange. Only prompt if an older version was running.
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (hadController) markUpdate(); });
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`, { scope: import.meta.env.BASE_URL }).catch(() => {});
+    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`, { scope: import.meta.env.BASE_URL, updateViaCache: 'none' })
+      .then((reg) => {
+        if (reg.waiting && hadController) markUpdate();
+        // Check for a new deploy whenever the app comes back to the foreground.
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') reg.update().catch(() => {}); });
+      })
+      .catch((e) => console.warn('SW registration failed', e));
   });
 }
