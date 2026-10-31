@@ -1,0 +1,35 @@
+{
+  "name": "vlogup",
+  "version": "0.1.0",
+  "description": "VlogUp: open-source, phone-first AI vlog editor (PWA).",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test:unit": "vitest run tests/unit",
+    "license-check": "node scripts/license-check.mjs",
+    "test:e2e": "playwright test"
+  },
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "idb-keyval": "^6.3.0",
+    "mediabunny": "^1.65.0",
+    "preact": "^11.1.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@preact/preset-vite": "^2.10.6",
+    "license-checker-rseidelsohn": "^5.0.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DanMo88/vlogup.git"
+  },
+  "homepage": "https://danmo88.github.io/vlogup/"
+}

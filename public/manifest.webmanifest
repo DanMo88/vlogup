@@ -1,0 +1,25 @@
+{
+  "name": "VlogUp · AI vlog editor",
+  "short_name": "VlogUp",
+  "description": "Open-source, phone-first vlog editor with an AI editor. Your footage never leaves your device.",
+  "id": "/vlogup/",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "portrait",
+  "background_color": "#0b0b10",
+  "theme_color": "#0b0b10",
+  "categories": ["photo", "video", "productivity"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "share_target": {
+    "action": "./",
+    "method": "GET",
+    "params": { "title": "title", "text": "text", "url": "url" }
+  }
+}
