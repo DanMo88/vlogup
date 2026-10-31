@@ -15,16 +15,17 @@ export interface ProviderInfo {
 }
 
 export const PROVIDERS: ProviderInfo[] = [
-  { id: 'grok', label: 'Grok', vendor: 'xAI', defaultModel: 'grok-4', keyPrefix: 'xai-', keysUrl: 'https://console.x.ai/', endpoint: 'https://api.x.ai/v1' },
-  { id: 'claude', label: 'Claude', vendor: 'Anthropic', defaultModel: 'claude-sonnet-4-5', keyPrefix: 'sk-ant-', keysUrl: 'https://console.anthropic.com/settings/keys', endpoint: 'https://api.anthropic.com/v1' },
-  { id: 'chatgpt', label: 'ChatGPT', vendor: 'OpenAI', defaultModel: 'gpt-5-mini', keyPrefix: 'sk-', keysUrl: 'https://platform.openai.com/api-keys', endpoint: 'https://api.openai.com/v1' },
+  { id: 'grok', label: 'Grok', vendor: 'xAI', defaultModel: 'grok-4.7', keyPrefix: 'xai-', keysUrl: 'https://console.x.ai', endpoint: 'https://api.x.ai/v1' },
+  { id: 'claude', label: 'Claude', vendor: 'Anthropic', defaultModel: 'claude-sonnet-5-5', keyPrefix: 'sk-ant-', keysUrl: 'https://console.anthropic.com/settings/keys', endpoint: 'https://api.anthropic.com/v1' },
+  { id: 'chatgpt', label: 'ChatGPT', vendor: 'OpenAI', defaultModel: 'gpt-6.1-terra', keyPrefix: 'sk-', keysUrl: 'https://platform.openai.com/api-keys', endpoint: 'https://api.openai.com/v1' },
 ];
 
 export interface AiSettings {
   provider: ProviderId;
   keys: Partial<Record<ProviderId, string>>;
   models: Partial<Record<ProviderId, string>>;
-  proxyUrl?: string; // optional self-hosted CORS proxy (see spec)
+  proxyUrl?: string; // optional self-hosted CORS proxy (see proxy/README.md)
+  spentUsd?: number; // running cost-meter total on this device
 }
 
 const KEY = 'vlogup.ai.v1';

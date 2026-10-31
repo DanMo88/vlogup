@@ -79,7 +79,7 @@ export function Home({ open }: { open: (id: string) => void }) {
       )}
 
       <footer class="home-foot muted small">
-        <p data-testid="home-version">VlogUp {VERSION_LABEL} · Milestone M1 · core editor. AI editing (Grok, Claude, ChatGPT with your own key) arrives in M4.</p>
+        <p data-testid="home-version">VlogUp {VERSION_LABEL} · AI editing with Grok, Claude or ChatGPT (your own key) is in the chat at the bottom of each project.</p>
         <p>
           Open source (MIT) · <a href="https://github.com/DanMo88/vlogup" target="_blank" rel="noopener">GitHub</a> · Your footage never leaves your device.
         </p>

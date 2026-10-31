@@ -4,7 +4,7 @@
 and the AI edits it on a real, editable timeline. Then fix anything by chatting, and export.
 
 - **Live app:** https://danmo88.github.io/vlogup/ (installable: tap **Install app**, on Android, iPhone, Windows and Mac)
-- **Status:** Milestone **M1, the core editor**, is live. The AI editor arrives in M4 (see the [roadmap](#roadmap)).
+- **Status:** **v0.2.0.** The M1 core editor is live, and the **AI chat editor** (the core of M4) is pulled forward: Grok, Claude or ChatGPT edits your timeline with your own key. See the [roadmap](#roadmap).
 - **Licence:** MIT · **Privacy:** your footage never leaves your device · **Cost:** free, no servers, no ads. For the AI you bring your own key.
 
 ## Vision
@@ -28,6 +28,48 @@ The AI doesn't stop at simple cuts. It does a *pro* edit:
 The language model decides *what and why*. Deterministic code decides *exactly where*: it snaps every cut to word
 boundaries, zero-crossings and the beat grid. That avoids the "cut mid-word" problems of other AI editors.
 Full design: [`docs/SPEC.md`](docs/SPEC.md).
+
+## AI editor (v0.2): edit by chatting
+
+Type what you want in the chat at the bottom, in **any language** (English, فارسی and others). For example:
+- "Put the photo first, cut the first 2 seconds of clip 1, add the title *Paris Day 1* at the top, make it 9:16."
+- "عکس رو اول بذار و عنوان «سفر پاریس» بالا اضافه کن"
+
+The AI edits the **real timeline** through typed tools:
+- `get_timeline`;
+- `move_clip`, `trim_clip`, `split_clip`, `delete_clip`;
+- `set_volume` (volume or mute);
+- `set_photo_duration`;
+- `add_text`, `update_text`, `delete_text`;
+- `set_canvas`;
+- `undo`.
+
+Every call is validated. Bad clip numbers or times are rejected back to the model, never applied. Accepted calls are
+written to the append-only edit log as actor `ai`.
+
+When it finishes you see:
+- a short summary and a ✓ list of the changes;
+- a **✅ Done** chip with **▶ Play** and **↶ Undo**, which undoes the whole AI run;
+- a cost meter.
+
+Errors are always shown in the chat: bad key, rate limit or credits, unknown model, network/CORS, timeout.
+
+| Provider | Default model (configurable) | Endpoint |
+|---|---|---|
+| **Grok** (xAI), the default | `grok-4.7` (cheaper: `grok-4.3`) | `https://api.x.ai/v1/chat/completions`, OpenAI-compatible function calling |
+| Claude (Anthropic) | `claude-sonnet-5-5` | `https://api.anthropic.com/v1/messages`, with tools and `anthropic-dangerous-direct-browser-access` |
+| ChatGPT (OpenAI) | `gpt-6.1-terra` | `https://api.openai.com/v1/chat/completions` |
+
+Browser calls (CORS) work for all three as of 2026-10-31. If a provider blocks them, use the optional proxy in [`proxy/`](proxy/).
+
+### Get an xAI (Grok) API key and add it to VlogUp
+1. Open https://console.x.ai and sign in. You can use your X account.
+2. Add credits or a payment method under **Billing**, and set a monthly spend limit.
+3. Go to **API Keys** → **Create API key**, give it a name such as "VlogUp", create it, then **copy** the key (it starts with `xai-`).
+4. In VlogUp, open a project. In the AI chat at the bottom, tap **⚙︎**, choose **Grok**, paste the key, then tap **Save**.
+5. Type an edit request and tap **Send**.
+
+The key is stored only in this browser (localStorage). It is sent only to `api.x.ai`, or to your own proxy if you set one.
 
 ## What works today (M1)
 
@@ -57,8 +99,14 @@ Full design: [`docs/SPEC.md`](docs/SPEC.md).
 - **Projects** are saved on the device: media in **OPFS** (IndexedDB fallback), projects in **IndexedDB**.
 - **Versioned timeline JSON** (`vlogup/timeline` v1) with an **append-only edit log**. Every edit, and even every undo
   or redo, is an op, so undo/redo is exact and the AI (M4) gets precise diffs. You can download the project JSON.
-- **AI settings (BYO key):** pick Grok, Claude or ChatGPT and store your key **only in this browser's localStorage**.
-  The chat itself says "coming in M4".
+- **AI settings (BYO key):** pick Grok, Claude or ChatGPT, then set the key, the model and an optional proxy. The key is stored **only in this browser's localStorage**. Settings also show the app version.
+- **Reliability on phones:**
+  - the ＋ buttons are native `<label>` file pickers;
+  - every import step has a timeout and shows progress, and problems are listed in an import report;
+  - HEVC (H.265) files the browser can't decode are detected and explained;
+  - every button gives feedback;
+  - a runtime-error banner offers **Reload**;
+  - when a new version is deployed, a **"New version ready · Reload"** prompt appears.
 - **Templates tab** (placeholder): lists the 16 bundled edit-recipe templates from [`templates/`](templates/), such as Fast Daily, Cinematic Travel, Beat-Sync Montage and Retro VHS. Each shows its name and description, labelled **AI apply coming in M4**. Schema: [`templates/SCHEMA.md`](templates/SCHEMA.md); asset sources and licences: [`templates/ASSETS.md`](templates/ASSETS.md).
 
 ## Roadmap
@@ -68,7 +116,7 @@ Full design: [`docs/SPEC.md`](docs/SPEC.md).
 | **M1 · Core editor on phones** | PWA shell; import, order and reorder; timeline; trim, split, delete, volume; text; proxy preview; 720p/1080p export via Mediabunny; OPFS/IndexedDB projects; versioned JSON plus op log | ✅ **live** |
 | **M2 · Analysis + pro audio + captions** | On-device Whisper word timestamps; silences, fillers and bad takes; energy, beats and faces; denoise (DeepFilterNet/RNNoise), EQ/compression, −14 LUFS, ducking, a CC0 SFX pack; animated captions with keyword highlight; free DSP chips | next |
 | **M3 · Pro visuals** | 6 shader transitions (PixiJS/WebGL2); auto colour plus shot match plus LUTs; Ken Burns; punch-ins; smart 9:16 reframe; speed ramps; titles, lower thirds, intro/outro; b-roll track with J/L cuts | planned |
-| **M4 · AI editor** | Grok / Claude / ChatGPT with your key; typed tool-calling; deterministic snapper; plan → **Done** → change list → Before/After; partial fixes; 4 style presets; **templates**; story builder; auto-QC; cost meter | planned |
+| **M4 · AI editor** | ✅ *pulled forward in v0.2:* Grok / Claude / ChatGPT with your key, typed tool-calling over the timeline, Done → change list → Undo, cost meter. *Still to do:* deterministic snapper (needs M2 analysis), Before/After, 4 style presets, **templates**, story builder, auto-QC | **core live** |
 | **M5 · Polish & v1.0** | Onboarding; performance auto-downgrade; before/after demos; optional CORS-proxy template; public v1.0 release | planned |
 
 ## Known limitations (M1)
@@ -83,6 +131,11 @@ Full design: [`docs/SPEC.md`](docs/SPEC.md).
 - The preview uses Canvas2D. WebGL effects come in M3.
 - Single main video track only. The b-roll overlay, music, voice and SFX tracks are reserved in the schema for M2/M3.
 - Keep the app in the foreground while exporting (it requests a screen wake lock).
+- **HEVC/H.265 phone videos**, the default on many Samsung and Pixel phones, can only be exported if the browser can
+  decode HEVC through WebCodecs. If it can't, VlogUp explains this at import. To fix it, record in H.264: on Samsung, open Camera ▸
+  Settings ▸ Advanced video options and turn off "High efficiency videos".
+- The AI can only see clip names, durations and order, plus the timeline JSON. It can't see the picture or hear the speech yet:
+  scene analysis and transcripts come in M2. Replies aren't streamed; a "thinking…" state shows progress.
 
 ## Develop
 
@@ -108,7 +161,8 @@ Every push to `main` runs the following through GitHub Actions:
 src/model/     timeline schema, pure op reducer, append-only log, undo/redo
 src/media/     import/probe, 540p proxies, OPFS + IndexedDB storage, capability detection
 src/engine/    shared Canvas2D compositor, preview player, Mediabunny MP4 exporter
-src/ai/        BYO-key provider settings (M4 adapters will live here)
+src/ai/        BYO-key settings, typed timeline tools (tools.ts), provider adapters + agent loop (agent.ts)
+proxy/         optional Cloudflare Worker CORS proxy (stores nothing)
 src/templates/ template loader (Templates tab)
 templates/     template JSON recipes + JSON Schema + asset licence notes
 src/ui/        Preact UI (home, editor, timeline, panels, chat sheet, export)

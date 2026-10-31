@@ -56,15 +56,16 @@ test('touch: every control responds to taps; import, edit, chat, export', async 
   await page.getByTestId('chat-input').fill('make it cinematic');
   await page.getByTestId('chat-send').tap();
   await expect(page.getByTestId('msg-user').last()).toHaveText('make it cinematic');
-  await expect(page.getByTestId('msg-bot').last()).toContainText('AI editing arrives in the next update (M4)');
+  await expect(page.getByTestId('msg-error').last()).toContainText('add your API key');
   await page.getByLabel('Resize AI chat').tap(); // half → full
   await page.getByLabel('Resize AI chat').tap(); // full → collapsed
 
   // Settings show the version; key stays local.
   await page.getByTestId('ai-settings').tap();
   await expect(page.getByTestId('app-version')).toContainText('VlogUp v');
-  await page.getByTestId('ai-key').fill('sk-ant-test');
+  await page.getByTestId('ai-key').fill('xai-test');
   await page.getByTestId('ai-save').tap();
+  expect(await page.evaluate(() => localStorage.getItem('vlogup.ai.v1'))).toContain('xai-test');
 
   // The visible ＋ buttons are not covered and open the native file chooser on tap.
   for (const s of ['[data-testid=empty-add]', '[data-testid=add-clips]']) await notCovered(page, s);

@@ -67,7 +67,7 @@ function csp(): Plugin {
     "img-src 'self' data: blob:",
     "media-src 'self' blob: data:",
     "worker-src 'self' blob:",
-    "connect-src 'self' blob: data: https://api.x.ai https://api.anthropic.com https://api.openai.com",
+    "connect-src 'self' blob: data: https://api.x.ai https://api.anthropic.com https://api.openai.com https://*.workers.dev https://*.supabase.co",
     "frame-src 'none'",
     "object-src 'none'",
     "base-uri 'self'",

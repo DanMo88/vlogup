@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { Aspect, Clip, MediaAsset, OpBody, Project, TextItem } from '../model/types';
 import {
-  clipLen, commit, DEFAULT_IMAGE_SECONDS, duration, exportProjectJson, fmtTime, locate, redoTarget, uid, undoTarget,
+  clipLen, commit, effectiveOps, DEFAULT_IMAGE_SECONDS, duration, exportProjectJson, fmtTime, locate, redoTarget, uid, undoTarget,
 } from '../model/timeline';
 import { getBlob, loadProject, mediaKey, proxyKey, putBlob, saveProject, storageBackend } from '../media/storage';
 import { probeFile, withTimeout, codecName } from '../media/probe';
@@ -210,6 +210,34 @@ export function Editor({ id, back }: { id: string; back: () => void }) {
   const undo = () => { const p = projRef.current; const t = p && undoTarget(p.log); if (p && t != null) update(commit(p, { type: 'undo', target: t })); };
   const redo = () => { const p = projRef.current; const t = p && redoTarget(p.log); if (p && t != null) update(commit(p, { type: 'redo', target: t })); };
 
+  // ---------- AI host: the agent edits through the same append-only log (actor 'ai') ----------
+  const lastSeq = (p: Project) => (p.log.length ? p.log[p.log.length - 1].seq : 0);
+  const aiHost = {
+    getProject: () => projRef.current!,
+    apply: (ops: OpBody[]) => {
+      let p = projRef.current!; const seqs: number[] = [];
+      for (const op of ops) { p = commit(p, op, 'ai'); seqs.push(lastSeq(p)); }
+      projRef.current = p; update(p);
+      return { project: p, seqs };
+    },
+    undo: (steps: number) => {
+      let p = projRef.current!; const seqs: number[] = [];
+      for (let i = 0; i < steps; i++) { const t = undoTarget(p.log); if (t == null) break; p = commit(p, { type: 'undo', target: t }, 'ai'); seqs.push(lastSeq(p)); }
+      projRef.current = p; update(p);
+      return { project: p, seqs };
+    },
+  };
+  /** Undo every still-effective edit made in one AI run (newest first). */
+  const undoAiRun = (seqs: number[]) => {
+    let p = projRef.current!;
+    const eff = new Set(effectiveOps(p.log).map((o) => o.seq));
+    let n = 0;
+    for (const sq of [...seqs].sort((a, b) => b - a)) if (eff.has(sq)) { p = commit(p, { type: 'undo', target: sq }, 'user'); n++; }
+    projRef.current = p; update(p);
+    flash(n ? `Undid ${n} AI change${n > 1 ? 's' : ''}` : 'Nothing to undo');
+  };
+  const playFromStart = () => { player.current?.seek(0); player.current?.play(); };
+
   const seek = (t: number) => { player.current?.pause(); player.current?.seek(t); setTime(t); };
 
   const runTool = (tid: string) => {
@@ -362,7 +390,7 @@ export function Editor({ id, back }: { id: string; back: () => void }) {
           </div>
         </section>
       ) : (
-        <ChatSheet />
+        <ChatSheet host={aiHost} play={playFromStart} undoRun={undoAiRun} />
       )}
 
       {toast && <div class="toast" role="status" data-testid="toast">{toast}</div>}
